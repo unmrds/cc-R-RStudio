@@ -1,0 +1,38 @@
+---
+title: "Coffee & Code - R & RStudio Introduction"
+output: html_notebook
+---
+
+# What is R?
+
+
+# What is RStudio
+
+
+# Why would you use R and RStudio?
+
+
+# What does an R workflow within RStudio look like?
+
+
+# Core concepts in R 
+
+
+
+```{r}
+plot(cars)
+```
+
+# Reference Materials
+
+* [R Wikipedia Article](https://en.wikipedia.org/wiki/R_(programming_language))
+* [Base R Cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/10/r-cheat-sheet-3.pdf)
+* [R Markdown Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+
+# Demonstration
+
+Dependencies:
+
+* Current release of R from the [CRAN](https://cran.r-project.org)
+* [RStudio Desktop](https://www.rstudio.com/products/rstudio/download/)
+* [tidyverse](https://tidyverse.tidyverse.org)
