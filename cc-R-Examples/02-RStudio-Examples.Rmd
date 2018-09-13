@@ -1,0 +1,321 @@
+---
+title: "RStudio Examples"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Kepler Data
+
+Our example comes from _Kepler Input Catalog (KIC) 8462852_, more famously known as _Tabby's Star_ or the "alien megastructure" star.
+
+We are going to reproduce this star's light curve and compare it with those of other Kepler observations to see what all the fuss was about. Primarily, we want to reproduce the light curve included in the published results.[^1]
+
+### Set up the environment
+
+Processed Kepler light curve data are available in FITS (Flexible Image Transport System) format. The FITS format is commonly used in astronomy, and many FITS software applications are freely available. For our purposes, there is also an R package, _FITSio_, which we can install and load using the _Packages_ tab in RStudio or the following commands:
+
+```{r}
+# install.packages("FITSio")
+library("FITSio")
+```
+
+While we're at it, let's load _tidyverse_, as well as some other libraries we will need.
+
+```{r, results='asis', warning = FALSE, message= FALSE}
+library("readr")
+library("tidyverse")
+```
+
+With the necessary libraries loaded, we will begin by plotting a noisier version of the published light curve of KIC 8462852. We'll step through the code in more detail below, but present the plot now to introduce the question of how is this interesting or different from the light curves of other stars.
+
+```{r}
+
+files <- list.files(path="./data/kplr008462852", pattern="*.fits", full.names=TRUE, recursive=FALSE)
+for (file in files){
+  if (!exists("kplrdata")){
+    kplrdata <- readFrameFromFITS(file, hdu = 1)
+    # PDCSAP_FLUX data need to be normalized per file before appending
+    dmed <- median(kplrdata$PDCSAP_FLUX, na.rm = TRUE)
+    kplrdata <- kplrdata %>% mutate(norm_flux = PDCSAP_FLUX / dmed)
+    rm(dmed)
+  }
+  if (exists("kplrdata")){
+    temp_dataset <- readFrameFromFITS(file, hdu = 1)
+    # PDCSAP_FLUX data need to be normalized per file before appending
+    tmed <- median(temp_dataset$PDCSAP_FLUX, na.rm = TRUE)
+    temp_dataset <- temp_dataset %>% mutate(norm_flux = PDCSAP_FLUX / tmed)
+    kplrdata <- rbind(kplrdata, temp_dataset)
+    rm(temp_dataset)
+    rm(tmed)
+  }
+}
+k8462852 <- kplrdata %>% select(TIME, PDCSAP_FLUX, norm_flux)
+lc <- ggplot(k8462852, aes(TIME, norm_flux))
+lc + geom_line(aes(TIME), size=0.5, color='blue')
+rm(kplrdata)
+```
+
+### Kepler Overview: Getting Data Summaries
+
+Data for this exercise will be downloaded from the Barbara A. Mikulski Archive for Space Telescopes (MAST)[^2]
+
+In addition to light curve data in FITS format, MAST provides a variety of catalogs and other datasets in tabular format. In order to create some meaningful contrast with KIC 8463852, it's best to compare with other "interesting" stars. We can use various catalogs and data products to identify such stars, but will limit ourselves to one for practical purposes:
+
+* Kepler Objects of Interest (KOI) Catalog: Includes information about candidate exoplanets and their corresponding stars.
+
+KOI data can be exported in CSV format and has already been added to the current workspace. We can load it using the _Import Dataset_ function in the IDE, or using the ```read.csv``` and ```view``` commands in the console.
+
+```{r read_tables, echo = FALSE}
+
+# Read KOI catalog export. "View" is best in RStudio - skipping it for the nb.
+
+kois <- read.csv('./data/koi/kepler_koi_search.csv')
+# View(kois)
+
+```
+
+Looking at the column definitions for the KOI catalog[^3], some interesting variables include
+
+* Kepler Disposition
+* NExScI Disposition
+* KOI Count
+* Duration
+* Planet Radius
+* Transit Number
+
+
+We can get an overview of these variables using the _summary_ and _plot_ functions.
+
+```{r quick-view-kois}
+
+summary(kois$Kepler.Disposition)
+
+plot(kois$Kepler.Disposition)
+
+summary(kois$NExScI.Disposition)
+
+plot(kois$NExScI.Disposition)
+
+summary(kois$KOI.count)
+
+plot(kois$KOI.count)
+
+summary(kois$Duration)
+
+plot(kois$Duration)
+
+summary(kois$Planet.Radius)
+
+plot(kois$Planet.Radius)
+
+summary(kois$Transit.Number)
+
+plot(kois$Transit.Number)
+
+```
+
+### Subsetting
+
+These summaries and plots are rough, but indicate there are some outliers that may provide a useful baseline to compare with KIC 8462852. We next use ```dplyr``` to subset the data to include a few stars of interest. Note that ```dplyr``` is loaded with the ```tidyverse``` library, so we don't have to load it separately.
+
+Let's start by getting the KIC numbers of the stars that have 6 or more KOI.
+
+```{r, results='asis', warning = FALSE, message= FALSE}
+
+# Note the '%>%' pipe syntax for dplyr
+
+koiCountsByID <- kois %>%
+  select(Kepler.ID, KOI.count) %>% filter(KOI.count >= 6) %>%
+  group_by(Kepler.ID) %>% summarise(koi_count = sum(!is.na(KOI.count)))
+
+knitr::kable(koiCountsByID, caption = "KIC with more than 5 KOIs, by KOI count")
+
+```
+
+That's a more useful summary than we got above. Similarly, to limit the KOI data to these five stars, we can go back and apply the same filter to the dataset and skip the grouping and summarizing.
+
+```{r}
+
+# Use the View function to see the new dataframe in RStudio
+
+filteredKOI <- kois %>% filter(KOI.count >= 6)
+
+# View(filteredKOI)
+
+```
+
+Prior to analyzing the light curves of these stars, we can use the data we have to compare the number and size of their corresponding KOI.
+
+For example purposes, we will begin by creating another dataframe to include only the fields or columns of interest. Where ```filter``` was used above to subset the data according to a given criteria, here we will use ```select```.
+
+```{r}
+
+# The names funtion is useful to see column names.
+names(filteredKOI)
+
+compareKOI <- filteredKOI %>% select(Kepler.ID, Kepler.Disposition, NExScI.Disposition, KOI.count,
+                                     Duration, Planet.Radius, Transit.Number)
+# View(compareKOI)
+
+# Get summary statistics
+
+summary(compareKOI)
+```
+
+Note that the data still include some outliers. As we iterate through plotting the data, we can facet by disposition to separate false positives.
+
+```{r}
+
+# A basic ggplot, with no styling, legend, titles, etc.
+
+koiplot <- ggplot(compareKOI, aes(Duration, Planet.Radius))
+
+koiplot + geom_point()
+
+koiplot + geom_point() + facet_grid(Kepler.Disposition ~ NExScI.Disposition)
+
+```
+
+This is an informative visualization, but still doesn't include any representation of the number of transits recorded for each KOI. There are various ways to include this last piece of information, which we will representing using the size and/or color of the plotted observations.
+
+#### A rogue's gallery of iterative plots...
+
+```{r}
+
+koiplot + geom_point(aes(size = Transit.Number)) + 
+  facet_grid(Kepler.Disposition ~ NExScI.Disposition)
+
+koiplot + geom_point(aes(size = Transit.Number, color = Transit.Number)) +
+  facet_grid(Kepler.Disposition ~ NExScI.Disposition)
+
+koiplot + geom_point(aes(size = KOI.count, color = Transit.Number)) +
+  facet_grid(Kepler.Disposition ~ NExScI.Disposition)
+
+koiplot + geom_point(aes(size = KOI.count, color = Transit.Number)) +
+  geom_text(aes(label = Kepler.ID)) +
+  facet_grid(Kepler.Disposition ~ NExScI.Disposition)
+
+koiplot + geom_point(aes(size = KOI.count, color = Transit.Number)) +
+  facet_grid(NExScI.Disposition ~ Kepler.ID)
+
+```
+
+After various refinements, we arrive at something informative. The final plot shows us the dispositions of KOIs by star, and plots the planet radius and transit duration for each KOI. The color legend indicates the number of transits per KOI.
+
+```{r}
+
+koiplot + geom_point(aes(color = Transit.Number)) +
+  facet_grid(NExScI.Disposition ~ Kepler.ID)
+
+```
+
+
+### Comparing light curves
+
+To this point we have used the KOI catalog data to identify some stars which have several confirmed exoplanets of differing characteristics, under the assumption that the light curves for these stars will provide sufficient contrast with the light curve of KIC 8462852 to demonstrate why this particular star was so newsworthy.
+
+At this point it would not be difficult or time consuming to process the light curve data for all five of the stars whose KOI data were plotted above. However, of the five there are two that seem most interesting - KIC 6541920 and KIC 11442793.
+
+Using the terminal provided by RStudio and the ```wget``` scripts available from MAST, we can download the light curve data to our workspace.
+
+```
+cd data
+
+mkdir kplr006541920
+
+wget -q -nH --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off http://archive.stsci.edu/missions/kepler/lightcurves//0065/006541920/
+
+cd ..
+
+mkdir kplr011442793
+
+cd kplr011442793
+
+wget -q -nH --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off http://archive.stsci.edu/missions/kepler/lightcurves//0114/011442793/
+```
+
+It should be noted that there are two types of light curve files in our downloaded data - short cadence ('slc') and long cadence ('llc'). In the case of KIC 8462852, only long cadence light curve data are available. We will limit our comparison to long cadence data for all three stars.
+
+Note also that the complete wget harvest includes zip files with all the data. These are essentially duplicates for our purposes and can be deleted to save space. To save space, the short cadence data have also been deleted.
+
+
+```{r}
+
+draw_lc <- function(fpath){
+  files <- list.files(path=paste("./data/", fpath, sep = ''),
+                      pattern="*_llc.fits", full.names = TRUE, recursive =
+                        FALSE)
+  for (file in files){
+    if (!exists("kplrdata")){
+      kplrdata <- readFrameFromFITS(file, hdu = 1)
+      # PDCSAP_FLUX data need to be normalized per file before appending
+      dmed <- median(kplrdata$PDCSAP_FLUX, na.rm = TRUE)
+      kplrdata <- kplrdata %>% mutate(norm_flux = PDCSAP_FLUX / dmed)
+      rm(dmed)
+    }
+    if (exists("kplrdata")){
+      temp_dataset <- readFrameFromFITS(file, hdu = 1)
+      # PDCSAP_FLUX data need to be normalized per file before appending
+      tmed <- median(temp_dataset$PDCSAP_FLUX, na.rm = TRUE)
+      temp_dataset <- temp_dataset %>% mutate(norm_flux = PDCSAP_FLUX / tmed)
+      kplrdata <- rbind(kplrdata, temp_dataset)
+      rm(temp_dataset)
+      rm(tmed)
+    }}
+  return(kplrdata)
+}
+
+```
+
+#### KIC 6541920
+
+```{r}
+
+kplrdata <- draw_lc("kplr006541920")
+kic <- kplrdata %>% select(TIME, PDCSAP_FLUX, norm_flux)
+lc <- ggplot(kic, aes(TIME, norm_flux))
+lc + geom_line(aes(TIME), size=0.5, color='blue') + 
+  labs(title = "KIC 6541920 Light Curve", y = "Normalized Flux")
+rm(kplrdata)
+```
+
+
+#### KIC 11442793
+
+```{r}
+
+kplrdata <- draw_lc("kplr011442793")
+kic <- kplrdata %>% select(TIME, PDCSAP_FLUX, norm_flux)
+lc <- ggplot(kic, aes(TIME, norm_flux))
+lc + geom_line(aes(TIME), size=0.5, color='blue') + 
+  labs(title = "KIC 11442793 Light Curve", y = "Normalized Flux")
+rm(kplrdata)
+```
+
+#### KIC 8462852
+
+```{r}
+kplrdata <- draw_lc("kplr008462852")
+kic <- kplrdata %>% select(TIME, PDCSAP_FLUX, norm_flux)
+lc <- ggplot(kic, aes(TIME, norm_flux))
+lc + geom_line(aes(TIME), size=0.5, color='blue') + 
+  labs(title = "KIC 8462852 Light Curve", y = "Normalized Flux")
+rm(kplrdata)
+```
+
+
+## References
+
+[^1]: Boyajian, T. S.; LaCourse, D. M.; Rappaport, S. A.; Fabrycky, D.; Fischer, D. A.; et al. (April 2016). "Planet Hunters IX. KIC 8462852 – where's the flux?". Monthly Notices of the Royal Astronomical Society. 457 (4): 3988–4004. arXiv:1509.03622v2 [astro-ph.SR]. doi:10.1093/mnras/stw218.
+
+[^2]: Barbara A. Mikulski Archive for Space Telescopes. Accessed 2018-09-13. http://archive.stsci.edu/index.html
+
+[^3]: Barbara A. Mikulski Archive for Space Telescopes. "KEPLER_KOI." Accessed 2018-09-13. http://archive.stsci.edu/kepler/koi/help/columns.html
+
