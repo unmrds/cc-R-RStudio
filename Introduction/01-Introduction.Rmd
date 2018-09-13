@@ -5,8 +5,56 @@ output: html_notebook
 
 # What is R?
 
+R is an [Open Source](https://opensource.org) programming language that is specifically designed for data analysis and visualization. It consists of the [core R system](https://cran.r-project.org) and a collection of (currently) over [13,000 packages](http://cran.cnr.berkeley.edu) that provide specialized data manipulation, analysis, and visualization capabilities. R is an implementation of the *S* statistical language developed in the mid-1970s at Bell Labs, with the start of development in the early 1990s and a stable beta version available by 2000. R has been under continuous development for over 25 years and has hit major development [milestones](https://en.wikipedia.org/wiki/R_\(programming_language\)#Milestones) over that time. 
 
-# What is RStudio
+R syntax is relatively straighforward and is based on a core principle of providing reasonable default values for many functions, and allowing a lot of flexibility and power through the use of optional parameters. 
+
+Some sample R code - just based on core R capabilities - no extra packages (`example_01.R`)
+
+```{r}
+# Do basic math - turn your computer into the most expensive pocket calculator you have ever used
+2+3
+23*(2^26 + 1.36)/sqrt(23e123)
+
+# Create a vector (collection) of values to work with
+# you can assign values using either the "<-" symbol or a "=". 
+# The preferred method is using the "<-" for clarity
+x <- c(15,18,6,56,15,28,35)
+x
+
+# Do some math with the vector
+y <- x^2
+y
+
+# Calculate some statistics
+mean(x)
+mean(y)
+
+var(x)
+var(y)
+
+summary(x)
+summary(y)
+
+fivenum(x)
+fivenum(y)
+
+# Generate some plots
+plot(x,y)          # basic scatterplot
+
+plot(x,y)          # same scatterplot with an added regression line for the paired x-y values 
+abline(lm(y~x), col="red")
+
+# Do some linear modeling
+my_lm <- lm(y ~ x) # simple linear regression model of the form "y = B0 + (B1 * x)"
+print(my_lm)       # print out the coefficients for the model
+summary(my_lm)     # compute and print the more detailed statistics for the model
+plot(my_lm)
+```
+
+This sample code could be run as a script from the command prompt using the command `Rscript example_01.R`
+
+# What is RStudio?
 
 
 # Why would you use R and RStudio?
@@ -18,10 +66,8 @@ output: html_notebook
 # Core concepts in R 
 
 
+# Getting help in R
 
-```{r}
-plot(cars)
-```
 
 # Reference Materials
 
