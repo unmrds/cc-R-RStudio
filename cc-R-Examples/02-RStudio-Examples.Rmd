@@ -30,7 +30,9 @@ While we're at it, let's load _tidyverse_, as well as some other libraries we wi
 
 ```{r, results='asis', warning = FALSE, message= FALSE}
 library("readr")
-library("tidyverse")
+#library("tidyverse")
+library("dplyr")
+library("ggplot2")
 ```
 
 With the necessary libraries loaded, we will begin by plotting a noisier version of the published light curve of KIC 8462852. We'll step through the code in more detail below, but present the plot now to introduce the question of how is this interesting or different from the light curves of other stars.
@@ -245,13 +247,40 @@ It should be noted that there are two types of light curve files in our download
 
 Note also that the complete wget harvest includes zip files with all the data. These are essentially duplicates for our purposes and can be deleted to save space. To save space, the short cadence data have also been deleted.
 
+The steps to plot the light curves is the same for each star, so it makes sense to create a function that will be called each time we need it. The general syntax of an R function is
+
+```
+
+function_name <- function(arg1, arg2, ...){
+  do stuff
+  return()
+}
+
+```
+
+The ```draw_lc``` function below has one argument, which is the path - really in our case the specific directory name - to the FITS data for a particular star.
+
+Generally, the function uses ```FITSio``` and ```dplyr``` methods, but there are a couple standard R methods worth noting. The first, ```list.files```, is used to generate a list of filenames that will be passed to the function. 
+
+```paste``` is used to concatenate strings to set the path to the data.
+
+```median``` is used to calculate the median of the values in a column.
 
 ```{r}
 
 draw_lc <- function(fpath){
+  # With the directory name specified by the 'fpath' argument,
+  # concatenate with './data/' for the full path. Get a list
+  # of filenames in the directory.
   files <- list.files(path=paste("./data/", fpath, sep = ''),
                       pattern="*_llc.fits", full.names = TRUE, recursive =
                         FALSE)
+  # For each of the files in the filelist, normalize PDCSAP_FLUX values
+  # by dividing each value by the median.
+  # Using the dplyr 'mutate' method, add the noralized values
+  # to a new column, 'norm_flux'. The plot will be drawn from this column.
+  # Append the data to the 'kplrdata' dataframe. If the dataframe
+  # does not already exist, create it.
   for (file in files){
     if (!exists("kplrdata")){
       kplrdata <- readFrameFromFITS(file, hdu = 1)
@@ -269,10 +298,14 @@ draw_lc <- function(fpath){
       rm(temp_dataset)
       rm(tmed)
     }}
+  # Return the 'kplrdata' dataframe, which includes the combined data for 
+  # all the files in the directory.
   return(kplrdata)
 }
 
 ```
+
+Once the dataframe consisting of all the light curve data for a particular star has been return, the plot is drawn using the dplyr ```select``` method to create a smaller dataframe using only the columns of interest.
 
 #### KIC 6541920
 
