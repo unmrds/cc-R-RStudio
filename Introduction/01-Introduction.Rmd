@@ -81,13 +81,41 @@ You can write R code in any text editor and execute R code from the command line
 
 As noted above, the development of an analysis workflow in R is a highly iterative process - both at the very low level of composing individual R commands, and at the higher level of updating the analysis based on increasing knowledge of the data and insights gained from visualizations and modeling. At one or more points in the analysis process you may need to communicate your results to others. This can be through reports, web sites, publications, or even interactive web applications. R and RStudio support all of these methods of communicating results. 
 
-![R Workflow as Conceptualized in [*R for Data Science*](https://www.safaribooksonline.com/library/view/r-for-data/9781491910382/)](images/rfds_00in01.png)
+![R Workflow as Conceptualized in [*R for Data Science*](http://r4ds.had.co.nz)](images/rfds_00in01.png)
 
 # Core concepts in R 
 
 ## Packages
 
 While the core R programming environment includes a variety of useful data import, transformation, analysis, and visualization functions, R's package environment is where the R language system shines. The tremendous collection of packages that have been developed in the R language for performing specialized analyses - often including sample data that can be used to test or learn the functionality provided by the packages. Packages are installed in your local instance of R through the `install.packages()` function and are loaded into the current environment using the `library()` function. You can browse the massive collection of packages through the *Comprehensive R Archive Network* [Contributed Packages](https://cran.r-project.org/web/packages/index.html) web page. 
+
+To see what packages are currently installed on your R system you can issue the `library()` command without any options.
+
+```{r}
+library()
+```
+
+To see the list of currently loaded packages (i.e. those that have been loaded as a result of executing the `library()` command and those that automatically load when the R environment is started) you can execute the `search()` function without any options.
+
+```{r}
+search()
+```
+
+
+## Importing and exporting data into and out of R
+
+R supports numerous data formats and databases for [data import and export](https://cran.r-project.org/doc/manuals/r-release/R-data.pdf), including:
+
+* Tabular ASCII text files
+* Spreadsheet-like data
+* Other statistical programs
+* Relational databases
+* A variety of binary files
+* Image files
+* Connections to files for reading/writing
+
+Many specialized data formats are also supported for reading and/or writing through community contributed packages. 
+
 
 ## Data Models
 
@@ -97,16 +125,42 @@ The core data models in R are built up from lists of objects, that may be themse
 
 * An R Data frame - a collection of data organized in rows and columns in which the column names should be non-empty, row names unique, the data within the dataframe are numeric, factor (an enumerated list of values), or character type, and each column contains the same number of data items. 
 
+* Selecting rows/columns from a data frame can be done using a variety of [subsetting commands](https://www.statmethods.net/management/subset.html)
 
+## Data Visualization
+
+R provides many options for data visualization through both general purpose and highly specialized packages. Some good examples of useful visualization packages can be found [here](https://blog.modeanalytics.com/r-data-visualization-packages/), [here](https://www.computerworld.com/article/2921176/business-intelligence/great-r-packages-for-data-import-wrangling-visualization.html), and [here](https://support.rstudio.com/hc/en-us/articles/201057987-Quick-list-of-useful-R-packages). 
+
+## Data Modeling
+
+Data modeling is supported for many disciplines and types of data. Examples of the types of analytic models that can be developed and run in R can be found in the [Awesome R](https://awesome-r.com/index.html) curated collection of recommended R packages. 
 
 # Getting help in R
+
+R has a well established system of documentation that is reflected in all of the developed packages, some of which include sample data that can be used to test and learn about their functionality. 
+
+* To start the browsable interface for the core R system the `help.start()` command can be executed
+
+```{r}
+help.start()
+```
+
+* The help information for specific R functions can be obtained uwing two different commands: `help()` and `?`. 
+
+```{r}
+# to see the documentation for the plot function
+help(plot)
+?plot
+```
 
 
 # Reference Materials
 
 * [R Wikipedia Article](https://en.wikipedia.org/wiki/R_(programming_language))
 * [RStudio Cheatsheet Collection](https://www.rstudio.com/resources/cheatsheets/)
-* [*R for Data Science*](https://www.safaribooksonline.com/library/view/r-for-data/9781491910382/). Garrett Grolemund and Hadley Wickham. O'Reilly Media, Sebastapol, CA. 2016. 
+* [Awesome R](https://awesome-r.com/index.html) R package collection
+* [*R for Data Science*](http://r4ds.had.co.nz). Garrett Grolemund and Hadley Wickham. O'Reilly Media, Sebastapol, CA. 2016. 
+* Quick-R [R Tutorial](https://www.statmethods.net/r-tutorial/index.html)
 
 # Demonstration
 
