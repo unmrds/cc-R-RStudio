@@ -70,7 +70,7 @@ Data for this exercise will be downloaded from the Barbara A. Mikulski Archive f
 
 In addition to light curve data in FITS format, MAST provides a variety of catalogs and other datasets in tabular format. In order to create some meaningful contrast with KIC 8463852, it's best to compare with other "interesting" stars. We can use various catalogs and data products to identify such stars, but will limit ourselves to one for practical purposes:
 
-* Kepler Objects of Interest (KOI) Catalog: Includes information about candidate exoplanets and their corresponding stars.
+* Kepler Objects of Interest (KOI) Catalog[^3]: Includes information about candidate exoplanets and their corresponding stars.
 
 KOI data can be exported in CSV format and has already been added to the current workspace. We can load it using the _Import Dataset_ function in the IDE, or using the ```read.csv``` and ```view``` commands in the console.
 
@@ -83,7 +83,7 @@ kois <- read.csv('./data/koi/kepler_koi_search.csv')
 
 ```
 
-Looking at the column definitions for the KOI catalog[^3], some interesting variables include
+Looking at the column definitions for the KOI catalog[^4], some interesting variables include
 
 * Kepler Disposition
 * NExScI Disposition
@@ -185,7 +185,7 @@ koiplot + geom_point() + facet_grid(Kepler.Disposition ~ NExScI.Disposition)
 
 ```
 
-This is an informative visualization, but still doesn't include any representation of the number of transits recorded for each KOI. There are various ways to include this last piece of information, which we will representing using the size and/or color of the plotted observations.
+This is an informative visualization, but still doesn't include any representation of the number of transits recorded for each KOI. There are various ways to include this last piece of information, which we will represent using the size and/or color of the plotted observations.
 
 #### A rogue's gallery of iterative plots...
 
@@ -305,9 +305,9 @@ draw_lc <- function(fpath){
 
 ```
 
-Once the dataframe consisting of all the light curve data for a particular star has been return, the plot is drawn using the dplyr ```select``` method to create a smaller dataframe using only the columns of interest.
+Once the dataframe consisting of all the light curve data for a particular star has been returned, the plot is drawn using the dplyr ```select``` method to create a smaller dataframe using only the columns of interest.
 
-#### KIC 6541920
+#### KIC 6541920[^5]
 
 ```{r}
 
@@ -320,7 +320,7 @@ rm(kplrdata)
 ```
 
 
-#### KIC 11442793
+#### KIC 11442793[^6]
 
 ```{r}
 
@@ -332,7 +332,7 @@ lc + geom_line(aes(TIME), size=0.5, color='blue') +
 rm(kplrdata)
 ```
 
-#### KIC 8462852
+#### KIC 8462852[^7]
 
 ```{r}
 kplrdata <- draw_lc("kplr008462852")
@@ -343,12 +343,24 @@ lc + geom_line(aes(TIME), size=0.5, color='blue') +
 rm(kplrdata)
 ```
 
+## Acknowledgments
 
-## References
+Some/all of the data presented in this notebook were obtained from the Mikulski Archive for Space Telescopes (MAST). STScI is operated by the Association of Universities for Research in Astronomy, Inc., under NASA contract NAS5-26555.
+
+This notebook includes data collected by the Kepler mission. Funding for the Kepler mission is provided by the NASA Science Mission directorate.
+
+## References and Data
 
 [^1]: Boyajian, T. S.; LaCourse, D. M.; Rappaport, S. A.; Fabrycky, D.; Fischer, D. A.; et al. (April 2016). "Planet Hunters IX. KIC 8462852 – where's the flux?". Monthly Notices of the Royal Astronomical Society. 457 (4): 3988–4004. arXiv:1509.03622v2 [astro-ph.SR]. doi:10.1093/mnras/stw218.
 
 [^2]: Barbara A. Mikulski Archive for Space Telescopes. Accessed 2018-09-13. http://archive.stsci.edu/index.html
 
-[^3]: Barbara A. Mikulski Archive for Space Telescopes. "KEPLER_KOI." Accessed 2018-09-13. http://archive.stsci.edu/kepler/koi/help/columns.html
+[^3]: kepler_stellar17 [dataset]. Accessed 2018-09-14. https://archive.stsci.edu/missions/kepler/catalogs/kepler_steller_17.csv.gz
 
+[^4]: Barbara A. Mikulski Archive for Space Telescopes. "KEPLER_KOI." Accessed 2018-09-13. http://archive.stsci.edu/kepler/koi/help/columns.html
+
+[^5]: Kepler light curve, KIC 6541920 [dataset]. Accessed 2018-09-14. http://archive.stsci.edu/missions/kepler/lightcurves//0065/006541920/
+
+[^6]: Kepler light curve, KIC 11442793 [dataset]. Accessed 2018-09-14. http://archive.stsci.edu/missions/kepler/lightcurves//0114/011442793/
+
+[^7]: Kepler light curve, KIC 8462852 [dataset]. Accessed 2018-09-14. http://archive.stsci.edu/missions/kepler/lightcurves//0084/008462852/
