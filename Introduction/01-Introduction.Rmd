@@ -121,6 +121,8 @@ search()
 
 RStudio provides a package manager for installing and loading packages into the current project or environment. Packages can also be managed in the console and in scripts using the `install.packages()` and `library()` commands.
 
+Installing packages is best done from the console or the GUI package manager. When writing scripts that use specific packages, be sure to include the necessary `library()` statements in the script. 
+
 ```{r}
 # Install the readr package for importing tabular data from CSV
 # and other text formats.
