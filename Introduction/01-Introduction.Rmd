@@ -47,7 +47,9 @@ As noted above, the development of an analysis workflow in R is a highly iterati
 
 ## Get Started Using RStudio
 
-From the _File_ menu, select _New File_ -> _R Script_. The script will open in an editor panel.
+From the _File_ menu, select _New File_ -> _R Script_. The script will open in an editor panel. Commands can be run from the console pane, or they can be entered into the R script and executed inline. 
+
+To run a command in the console, type in the command and hit ENTER. To run a command from a script, select the line with the code you want to run and hit CTL+ENTER.
 
 As we saw with Python last month, R can be used like a calculator.
 
@@ -59,9 +61,46 @@ As we saw with Python last month, R can be used like a calculator.
 12 / 3
 
 2 ** 3
+
+## We can also call mathematical functions
+# Square root
+sqrt(144)
+
+# Natural log
+log(10)
+
+# Trig functions
+sin(10)
+cos(4)
+tan(60)
 ```
 
+# Getting help in R
 
+R has a well established system of documentation that is reflected in all of the developed packages, some of which include sample data that can be used to test and learn about their functionality. 
+
+* To start the browsable interface for the core R system the `help.start()` command can be executed
+
+```{r}
+help.start()
+```
+
+* The help information for specific R functions can be obtained uwing two different commands: `help()` and `?`. 
+
+```{r}
+# to see the documentation for the plot function
+help(plot)
+?plot
+```
+
+ * If you don't know specific function names, you can search help for functions related to certain topics.
+ 
+ ```{r}
+ # Search for trig functions
+ help.search("trigenometry")
+ help.search("plot")
+ ```
+ 
 # Core concepts in R 
 
 ## Packages
@@ -78,6 +117,17 @@ To see the list of currently loaded packages (i.e. those that have been loaded a
 
 ```{r}
 search()
+```
+
+RStudio provides a package manager for installing and loading packages into the current project or environment. Packages can also be managed in the console and in scripts using the `install.packages()` and `library()` commands.
+
+```{r}
+# Install the readr package for importing tabular data from CSV
+# and other text formats.
+install.packages("readr")
+
+# Load the readr package into the current environment.
+library(readr)
 ```
 
 ## Importing and exporting data into and out of R
@@ -113,23 +163,6 @@ R provides many options for data visualization through both general purpose and 
 
 Data modeling is supported for many disciplines and types of data. Examples of the types of analytic models that can be developed and run in R can be found in the [Awesome R](https://awesome-r.com/index.html) curated collection of recommended R packages. 
 
-# Getting help in R
-
-R has a well established system of documentation that is reflected in all of the developed packages, some of which include sample data that can be used to test and learn about their functionality. 
-
-* To start the browsable interface for the core R system the `help.start()` command can be executed
-
-```{r}
-help.start()
-```
-
-* The help information for specific R functions can be obtained uwing two different commands: `help()` and `?`. 
-
-```{r}
-# to see the documentation for the plot function
-help(plot)
-?plot
-```
 
 Some sample R code - just based on core R capabilities - no extra packages (`example_01.R`)
 
