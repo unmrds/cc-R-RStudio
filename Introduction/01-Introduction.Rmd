@@ -73,6 +73,31 @@ log(10)
 sin(10)
 cos(4)
 tan(60)
+
+# Do basic math - turn your computer into the most expensive pocket calculator you have ever used
+2+3
+23*(2^26 + 1.36)/sqrt(23e123)
+```
+## Creating Objects
+
+More useful is assigning values to objects and performing operations on them. In R, the assigment operator is `<-`:
+
+```{r}
+
+a <- 5
+b <- 10
+a + b
+b / a
+a * 2
+a** 2
+sqrt(a)
+a <- a ** 2
+sqrt(a)
+
+# Objects can store string values, as well as other data types
+# and data structures:
+animal <-  "cat"
+animal
 ```
 
 # Getting help in R
@@ -95,11 +120,11 @@ help(plot)
 
  * If you don't know specific function names, you can search help for functions related to certain topics.
  
- ```{r}
+```{r}
  # Search for trig functions
  help.search("trigenometry")
  help.search("plot")
- ```
+```
  
 # Core concepts in R 
 
@@ -126,12 +151,62 @@ Installing packages is best done from the console or the GUI package manager. Wh
 ```{r}
 # Install the readr package for importing tabular data from CSV
 # and other text formats.
-install.packages("readr")
+# install.packages("readr") # commented out - we only need to install once!
 
 # Load the readr package into the current environment.
 library(readr)
 ```
 
+## Data Models
+
+The core data models in R are built up from lists of objects, that may be themselves made up of lists. From this primative of nested lists of objects you can have the core data structures that R uses:
+
+* An R Vector - a collection of data of the same type (i.e. logical, integer, double, character, complex, or raw). Vectors can be created as products of functions like the `seq()` function, or can be manually created using the `c()` command. 
+
+```{r}
+# As noted above, objects can store data structures including vectors
+# and data frames.
+
+# The c() function is used to combine values into a vector or list.
+# For more info, type help(c)
+colors <- c("red", "green", "yellow")
+colors
+
+temp_f <- c(50, 52, 58, 60)
+temp_f
+
+# Add values to a vector
+temp_f <- c(32, temp_f)
+temp_f <- c(temp_f, 212)
+temp_f
+typeof(temp_f) # Check the data type of the values
+
+# We can operate on all of the values in a vector
+temp_c <- (temp_f - 32) * 5/9
+temp_c
+typeof(temp_c)
+
+# We can subset vectors -note that R does not use 0 indexing.
+# That is, the first item in a vector has a position index of 1:
+temp_c[1]
+
+temp_c[c(2, 4)] # Use the c() function to get multiple items
+
+# Conditional subsetting
+temp_c[temp_c < 100]
+```
+
+* An R Data frame - a collection of data organized in rows and columns in which the column names should be non-empty, row names unique, the data within the dataframe are numeric, factor (an enumerated list of values), or character type, and each column contains the same number of data items. 
+
+Data frame columns are vectors.
+
+```{r}
+# Example- we don't usually create data frames manually:
+temp_conversions <- data.frame(temp_f, temp_c)
+temp_conversions
+```
+
+* Selecting rows/columns from a data frame can be done using a variety of [subsetting commands](https://www.statmethods.net/management/subset.html)
 ## Importing and exporting data into and out of R
 
 R supports numerous data formats and databases for [data import and export](https://cran.r-project.org/doc/manuals/r-release/R-data.pdf), including:
@@ -147,16 +222,6 @@ R supports numerous data formats and databases for [data import and export](http
 Many specialized data formats are also supported for reading and/or writing through community contributed packages. 
 
 
-## Data Models
-
-The core data models in R are built up from lists of objects, that may be themselves made up of lists. From this primative of nested lists of objects you can have the core data structures that R uses:
-
-* An R Vector - a collection of data of the same type (i.e. logical, integer, double, character, complex, or raw). Vectors can be created as products of functions like the `seq()` function, or can be manually created using the `c()` command. 
-
-* An R Data frame - a collection of data organized in rows and columns in which the column names should be non-empty, row names unique, the data within the dataframe are numeric, factor (an enumerated list of values), or character type, and each column contains the same number of data items. 
-
-* Selecting rows/columns from a data frame can be done using a variety of [subsetting commands](https://www.statmethods.net/management/subset.html)
-
 ## Data Visualization
 
 R provides many options for data visualization through both general purpose and highly specialized packages. Some good examples of useful visualization packages can be found [here](https://blog.modeanalytics.com/r-data-visualization-packages/), [here](https://www.computerworld.com/article/2921176/business-intelligence/great-r-packages-for-data-import-wrangling-visualization.html), and [here](https://support.rstudio.com/hc/en-us/articles/201057987-Quick-list-of-useful-R-packages). 
@@ -169,10 +234,6 @@ Data modeling is supported for many disciplines and types of data. Examples of t
 Some sample R code - just based on core R capabilities - no extra packages (`example_01.R`)
 
 ```{r}
-# Do basic math - turn your computer into the most expensive pocket calculator you have ever used
-2+3
-23*(2^26 + 1.36)/sqrt(23e123)
-
 # Create a vector (collection) of values to work with
 # you can assign values using either the "<-" symbol or a "=". 
 # The preferred method is using the "<-" for clarity
