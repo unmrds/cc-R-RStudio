@@ -1,0 +1,79 @@
+---
+title: "COVIID-19 R Example"
+output: html_notebook
+---
+
+This R markdown document provides an example of the basic sequence of commands in R to:
+
+* load the needed libraries to perform an analysis
+* import data 
+* reshape and process the data to support an analysis and visualization
+* perform an analysis (describe & summarize)
+* visualize the data
+
+In this case we will download US COVID-19 infection data for each US county and combine those data with demongraphic data from the US Census Bureau to gain an understanding of per-capita rates of increase in infection relative to some demographic variables of interest.  
+
+# Import Libraries
+
+```{R}
+library(tidyverse)
+library(readxl)
+```
+
+# Import data 
+
+To perform our analysis we are going to retrieve and import three datasets:
+
+* US Census Bureau - American Community Survey 5-year  (ACS5) population estimates for all US countys from 2018. https://data.census.gov/cedsci/table?q=population%20by%20county&g=0100000US.050000&hidePreview=true&tid=ACSST1Y2018.S0101&vintage=2018
+
+* US Census Bureau - [USA Counties 2011](https://www.census.gov/library/publications/2011/compendia/usa-counties-2011.html) [Land Area Data](https://www2.census.gov/library/publications/2011/compendia/usa-counties/zip/LND.zip) (LAD) and associated [reference data](https://www2.census.gov/library/publications/2011/compendia/usa-counties/zip/Ref.zip). Note that these data are provided as a zipped xls file. 
+
+* The current US confirmed COVID-19 infection count by county/territory time series data (C19) from the Johns Hopkins CSSE [Github repository](https://github.com/CSSEGISandData/COVID-19). https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv 
+
+## ACS5 data import
+
+These data will be imported from a previously downloaded copy of the data from the US Census Bureau web site (referenced above). These data come in the form of a CSV file and an associated CSV file that describes the content of each of the columns in the file. We will use the Tidyverse `read_csv` command to import this file from the local data folder.
+
+```{r}
+# relative path and filename for the csv file to be imported
+acs5_filepath <- "data/ACS2018/ACSST5Y2018.S0101_data_with_overlays_2020-04-06T234438.csv"
+acs5_raw <- read_csv(acs5_filepath, col_names = TRUE, skip = 1)
+str(acs5_raw)
+problems(acs5_raw)
+```
+
+
+## LAD Data Import
+
+These data will be imported from a previously downloaded copy of the data file that was provided by the US Census Bureau as an XLS file. To read this file we have to have previously loaded the `readxl` library into our R session. 
+
+```{r}
+# relative path and filename for the xls file to be imported
+lad_filepath <- "data/LandArea/LND01.xls"
+lad_raw <- read_excel(lad_filepath)
+str(lad_raw)
+problems(lad_raw)
+```
+
+
+## C19 data import
+
+These data are going to be directly downloaded from the github repository that the Johns Hopkins CSSE updates on a regular basis. By redownloading the current data from the repository our analysis will always reflect the current state of knowledge about infections for each county in the database. 
+
+
+
+```{r}
+# relative path and filename for the xls file to be imported
+c19_filepath <- "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"
+c19_raw <- read_csv(c19_filepath)
+str(c19_raw)
+problems(c19_raw)
+```
+
+# Reshape and process the data to support an analysis and visualization
+
+
+# Perform an analysis (describe & summarize)
+
+
+# Visualize the data
