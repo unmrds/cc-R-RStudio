@@ -237,6 +237,18 @@ temp_conversions[, 2] # All elements in second column
 temp_conversions[3:4, 1:2] # Third and fourth row of first two columns
 ```
 
+`dplyr` is a powerful package that provides intuitive, robust functions for subsetting data.
+
+```{r}
+library(dplyr)
+
+# Subset by column name
+temp_conversions %>% select(temp_f)
+
+# Use filter to subset by conditions
+temp_conversions %>% filter(temp_c > 0 & temp_c < 100)
+```
+
 
 ## Importing and exporting data into and out of R
 
