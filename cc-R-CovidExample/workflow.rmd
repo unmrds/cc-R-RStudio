@@ -18,6 +18,7 @@ In this case we will download US COVID-19 infection data for each US county and 
 ```{R}
 library(tidyverse)
 library(readxl)
+library(lubridate)
 ```
 
 # Import data 
@@ -72,8 +73,174 @@ problems(c19_raw)
 
 # Reshape and process the data to support an analysis and visualization
 
+In this section of the analysis we are going to extract a useful subset of columns from our three datasets and generate derived datasets that can be used for further analysis and visualization. In support of this activity we are going to illustrate the use of several tidyverse dplyr commands:
 
-# Perform an analysis (describe & summarize)
+* `mutate` - generating new columns based on calculated values
+* `select` - selecting a subset of columns that should be included in a returned tibble
+* `filter` - selecting a subset of rows that meet specified selection criteria
+
+## Extract some key columns from the ACS dataset
+
+The columns that we are interested in for this example are all of the populations for each age category. We are also extracting the full indentifier column (`id`), a subset of the identifier column that represents the combined FIPS code for the state and county (five characters, `st_county`), and a descriptive name of the geography (`area_name`). In the process of extracting the columns the long default names are replaced with more managable ones. 
+
+```{r}
+acs5_working <- acs5_raw %>% 
+  mutate(
+    st_county = str_sub(id, -5)
+  ) %>% 
+  select(
+    id = id,
+    st_county,
+    area_name = `Geographic Area Name`,
+    pop_total = `Estimate!!Total!!Total population`,
+    pop_lt5 =   `Estimate!!Total!!Total population!!AGE!!Under 5 years`,
+    pop_5_9 =   `Estimate!!Total!!Total population!!AGE!!5 to 9 years`,
+    pop_10_14 = `Estimate!!Total!!Total population!!AGE!!10 to 14 years`,
+    pop_15_19 = `Estimate!!Total!!Total population!!AGE!!15 to 19 years`,
+    pop_20_24 = `Estimate!!Total!!Total population!!AGE!!20 to 24 years`,
+    pop_25_29 = `Estimate!!Total!!Total population!!AGE!!25 to 29 years`,
+    pop_30_34 = `Estimate!!Total!!Total population!!AGE!!30 to 34 years`,
+    pop_35_39 = `Estimate!!Total!!Total population!!AGE!!35 to 39 years`,
+    pop_40_44 = `Estimate!!Total!!Total population!!AGE!!40 to 44 years`,
+    pop_45_49 = `Estimate!!Total!!Total population!!AGE!!45 to 49 years`,
+    pop_50_54 = `Estimate!!Total!!Total population!!AGE!!50 to 54 years`,
+    pop_55_59 = `Estimate!!Total!!Total population!!AGE!!55 to 59 years`,
+    pop_60_64 = `Estimate!!Total!!Total population!!AGE!!60 to 64 years`,
+    pop_65_69 = `Estimate!!Total!!Total population!!AGE!!65 to 69 years`,
+    pop_70_74 = `Estimate!!Total!!Total population!!AGE!!70 to 74 years`,
+    pop_75_79 = `Estimate!!Total!!Total population!!AGE!!75 to 79 years`,
+    pop_80_84 = `Estimate!!Total!!Total population!!AGE!!80 to 84 years`,
+    pop_gt84 =  `Estimate!!Total!!Total population!!AGE!!85 years and over`
+  )
+```
+
+## Extract key columns from LAD dataset
+
+The coluns to be extracted from this dataset include the FIPS code for the state and county (`STCOU` in the original dataset, renamed to `st_county`), the descriptive area name (`Areaname` in the original dataset, renamed to `area_name`), and land area in sq. miles from the 2010 census data set (`LND110210D` in the original dataset, renamce to `land_area_sqmi`). 
+
+```{r}
+lad_working <- lad_raw %>% 
+  select(
+    st_county = STCOU,
+    area_name = Areaname,
+    land_area_sqmi = LND110210D
+  )
+```
+
+Build a reference table of state FIPS codes for later use in analysis and visualization
+
+```{r}
+state_fips <- lad_raw %>% 
+  filter(str_sub(STCOU, -3) == "000") %>% 
+  mutate(
+    st_fips = str_sub(STCOU, 1, 2)
+  ) %>% 
+  select(
+    st_fips,
+    Areaname
+  )
+```
+
+## Extract and reshape the C19 dataset
+
+First generate the geography identifier that matches the other datasets from the `UID` field - `st_county`. Then extract the descriptive name for the geography `Combined_Key`, and thre remaining date columns for which there are associated confirmed infection counts.  
+
+```{r}
+c19_working_wide <- c19_raw %>% 
+  mutate(
+    st_county = str_sub(UID, -5)
+  ) %>% 
+  select(
+    -c(
+      iso2, 
+      iso3, 
+      code3, 
+      FIPS, 
+      Admin2, 
+      Province_State, 
+      Country_Region, 
+      Lat, 
+      Long_
+      ),
+    st_county
+  )
+
+```
+
+Reshape the infection data file into a tall format that allows for more efficient generation of time-series analysis of data. We are using the `pivot_longer` function instead of the now depricated `gather` function frequently referenced in the context of reshaping data. 
+
+```{r}
+c19_working_tall <- c19_working_wide %>% 
+  pivot_longer(
+    -c(UID, st_county, Combined_Key),
+    names_to = "caldate",
+    values_to = "count"
+  )
+```
 
 
-# Visualize the data
+
+# Perform an analysis (describe & summarize) and visualize results
+
+* `group` - aggregate values based on one or more grouping variables
+* `summarize` - calculate descriptive statistics for aggregated values
+* `ggplot` - flexible plotting package for incrementally building data visualizations
+
+## Aggregate data across all geographies by calendar date
+
+```{r}
+master_ts <- c19_working_tall %>% 
+  mutate(
+    caldate = mdy(caldate)
+  ) %>% 
+  group_by(caldate) %>% 
+  summarize(
+    ct = sum(count)
+  )
+
+master_plot <- ggplot(master_ts, mapping = aes(x = caldate, y = ct)) + 
+  geom_line() +
+  xlab("Date") +
+  ylab("Confirmed Infection Count") +
+  ggtitle("Number of confirmed cases by date")
+
+master_plot
+
+master_plot + scale_y_continuous(trans='log2')
+```
+
+## Plot growth by state
+
+
+```{r}
+state_ts <- c19_working_tall %>% 
+  filter(str_length(st_county) == 5) %>% 
+  mutate(
+    st_fips = str_sub(st_county, 1, 2),
+    caldate = mdy(caldate)
+  ) %>% 
+  inner_join(state_fips) %>% 
+  group_by(Areaname, caldate) %>% 
+  summarize(
+    ct = sum(count)
+  ) 
+
+
+state_plot <- ggplot(state_ts, mapping = aes(x = caldate, y = ct)) + 
+  geom_hex()+
+  #geom_point(alpha = .3, color = "black", size = .1) +
+  xlab("Date") +
+  ylab("Confirmed Infection Count") +
+  ggtitle("Number of confirmed cases by date") +
+  theme(legend.position="none") +
+  theme(legend.text=element_text(size=6))
+
+state_plot
+state_plot + scale_y_continuous(trans='log2')
+
+```
+
+
+
+
+
