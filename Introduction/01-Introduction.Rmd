@@ -151,11 +151,28 @@ Installing packages is best done from the console or the GUI package manager. Wh
 ```{r}
 # Install the readr package for importing tabular data from CSV
 # and other text formats.
-# install.packages("readr") # commented out - we only need to install once!
+#install.packages(c("tidyverse", "readxl", "lubridate")) # commented out - we only need to install once!
 
-# Load the readr package into the current environment.
-library(readr)
+# Load the packages that will ce used for the analysis workflow.
+library(tidyverse)
+library(readxl)
+library(lubridate)
 ```
+
+## Importing and exporting data into and out of R
+
+R supports numerous data formats and databases for [data import and export](https://cran.r-project.org/doc/manuals/r-release/R-data.pdf), including:
+
+* Tabular ASCII text files
+* Spreadsheet-like data
+* Other statistical programs
+* Relational databases
+* A variety of binary files
+* Image files
+* Connections to files for reading/writing
+
+Many specialized data formats are also supported for reading and/or writing through community contributed packages. 
+
 
 ## Data Models
 
@@ -248,21 +265,6 @@ temp_conversions %>% select(temp_f)
 # Use filter to subset by conditions
 temp_conversions %>% filter(temp_c > 0 & temp_c < 100)
 ```
-
-
-## Importing and exporting data into and out of R
-
-R supports numerous data formats and databases for [data import and export](https://cran.r-project.org/doc/manuals/r-release/R-data.pdf), including:
-
-* Tabular ASCII text files
-* Spreadsheet-like data
-* Other statistical programs
-* Relational databases
-* A variety of binary files
-* Image files
-* Connections to files for reading/writing
-
-Many specialized data formats are also supported for reading and/or writing through community contributed packages. 
 
 ## Data Visualization
 
