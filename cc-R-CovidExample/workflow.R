@@ -1,23 +1,4 @@
----
-title: "COVIID-19 R Example"
-output:
-  html_document:
-    df_print: paged
----
-
-This R markdown document provides an example of the basic sequence of commands in R to:
-
-* load the needed libraries to perform an analysis
-* import data 
-* reshape and process the data to support an analysis and visualization
-* perform an analysis (describe & summarize)
-* visualize the data
-
-In this case we will download US COVID-19 infection data for each US county and combine those data with demongraphic data from the US Census Bureau to gain an understanding of per-capita rates of increase in infection relative to some demographic variables of interest.  
-
-# Import Libraries
-
-```{R}
+## -----------------------------------------------------------------------------
 knitr::opts_chunk$set(message = FALSE)
 options("scipen"=100, "digits"=4) # tune up when numbers will be displayed in fixed vs. scientific notation
 library(tidyverse)    # core meta-package for a bunch of the tidyverse packages
@@ -27,97 +8,51 @@ library(ggthemes)     # add some great themes to use in our plots
 library(RColorBrewer) # add the color brewer color palette
 library(knitr)        # combined with kableExtra output tibbles as nicely formatted tables  
 library(kableExtra)   # combined with kableExtra output tibbles as nicely formatted tables
-```
 
-# Import data 
 
-To perform our analysis we are going to retrieve and import three datasets:
-
-* US Census Bureau - American Community Survey 5-year  (ACS5) population estimates for all US countys from 2018. https://data.census.gov/cedsci/table?q=population%20by%20county&g=0100000US.050000&hidePreview=true&tid=ACSST1Y2018.S0101&vintage=2018
-
-* US Census Bureau - [USA Counties 2011](https://www.census.gov/library/publications/2011/compendia/usa-counties-2011.html) [Land Area Data](https://www2.census.gov/library/publications/2011/compendia/usa-counties/zip/LND.zip) (LAD) and associated [reference data](https://www2.census.gov/library/publications/2011/compendia/usa-counties/zip/Ref.zip). Note that these data are provided as a zipped xls file. 
-
-* The current US confirmed COVID-19 infection count by county/territory time series data (C19) from the Johns Hopkins CSSE [Github repository](https://github.com/CSSEGISandData/COVID-19). https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv 
-
-## ACS5 data import
-
-These data will be imported from a previously downloaded copy of the data from the US Census Bureau web site (referenced above). These data come in the form of a CSV file and an associated CSV file that describes the content of each of the columns in the file. We will use the Tidyverse `read_csv` command to import this file from the local data folder.
-
-```{r}
+## -----------------------------------------------------------------------------
 # relative path and filename for the csv file to be imported
 acs5_filepath <- "data/ACS2018/ACSST5Y2018.S0101_data_with_overlays_2020-04-06T234438.csv"
 acs5_raw <- read_csv(acs5_filepath, col_names = TRUE, skip = 1)
-```
-### Column specifications
 
-```{r}
+
+## -----------------------------------------------------------------------------
 glimpse(acs5_raw)
-```
-### Import problems
 
-```{r}
+
+## -----------------------------------------------------------------------------
 problems(acs5_raw)
-```
 
 
-## LAD Data Import
-
-These data will be imported from a previously downloaded copy of the data file that was provided by the US Census Bureau as an XLS file. To read this file we have to have previously loaded the `readxl` library into our R session. 
-
-```{r}
+## -----------------------------------------------------------------------------
 # relative path and filename for the xls file to be imported
 lad_filepath <- "data/LandArea/LND01.xls"
 lad_raw <- read_excel(lad_filepath)
-```
 
-### Column specifications
 
-```{r}
+## -----------------------------------------------------------------------------
 glimpse(lad_raw)
-```
-### Import problems
 
-```{r}
+
+## -----------------------------------------------------------------------------
 problems(lad_raw)
-```
-
-## C19 data import
-
-These data are going to be directly downloaded from the github repository that the Johns Hopkins CSSE updates on a regular basis. By redownloading the current data from the repository our analysis will always reflect the current state of knowledge about infections for each county in the database. 
 
 
-
-```{r}
+## -----------------------------------------------------------------------------
 # relative path and filename for the xls file to be imported
 c19_filepath <- "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"
 c19_raw <- read_csv(c19_filepath)
-```
 
-### Column specifications
 
-```{r}
+## -----------------------------------------------------------------------------
 glimpse(c19_raw)
-```
-### Import problems
 
-```{r}
+
+## -----------------------------------------------------------------------------
 problems(c19_raw)
-```
 
 
-# Reshape and process the data to support an analysis and visualization
-
-In this section of the analysis we are going to extract a useful subset of columns from our three datasets and generate derived datasets that can be used for further analysis and visualization. In support of this activity we are going to illustrate the use of several tidyverse dplyr commands:
-
-* `mutate` - generating new columns based on calculated values
-* `select` - selecting a subset of columns that should be included in a returned tibble
-* `filter` - selecting a subset of rows that meet specified selection criteria
-
-## Extract some key columns from the ACS dataset
-
-The columns that we are interested in for this example are all of the populations for each age category. We are also extracting the full indentifier column (`id`), a subset of the identifier column that represents the combined FIPS code for the state and county (five characters, `st_county`), and a descriptive name of the geography (`area_name`). In the process of extracting the columns the long default names are replaced with more managable ones. 
-
-```{r}
+## -----------------------------------------------------------------------------
 acs5_working <- acs5_raw %>% 
   mutate(
     st_county = str_sub(id, -5)
@@ -153,13 +88,9 @@ acs5_working <- acs5_raw %>%
     pct_gte65 = pop_gte65/pop_total
   )
 glimpse(acs5_working)
-```
 
-## Extract key columns from LAD dataset
 
-The coluns to be extracted from this dataset include the FIPS code for the state and county (`STCOU` in the original dataset, renamed to `st_county`), the descriptive area name (`Areaname` in the original dataset, renamed to `area_name`), and land area in sq. miles from the 2010 census data set (`LND110210D` in the original dataset, renamce to `land_area_sqmi`). 
-
-```{r}
+## -----------------------------------------------------------------------------
 lad_working <- lad_raw %>% 
   select(
     st_county = STCOU,
@@ -167,11 +98,9 @@ lad_working <- lad_raw %>%
     land_area_sqmi = LND110210D
   )
 glimpse(lad_working)
-```
 
-Build a reference table of state FIPS codes for later use in analysis and visualization
 
-```{r}
+## -----------------------------------------------------------------------------
 state_fips <- lad_raw %>% 
   filter(str_sub(STCOU, -3) == "000") %>% 
   mutate(
@@ -182,13 +111,9 @@ state_fips <- lad_raw %>%
     Areaname
   )
 glimpse(state_fips)
-```
 
-## Extract and reshape the C19 dataset
 
-First generate the geography identifier that matches the other datasets from the `UID` field - `st_county`. Then extract the descriptive name for the geography `Combined_Key`, and thre remaining date columns for which there are associated confirmed infection counts.  
-
-```{r}
+## -----------------------------------------------------------------------------
 c19_working_wide <- c19_raw %>% 
   mutate(
     st_county = str_sub(UID, -5)
@@ -208,11 +133,9 @@ c19_working_wide <- c19_raw %>%
     st_county
   )
 glimpse(c19_working_wide)
-```
 
-Reshape the infection data file into a tall format that allows for more efficient generation of time-series analysis of data. We are using the `pivot_longer` function instead of the now depricated `gather` function frequently referenced in the context of reshaping data. 
 
-```{r}
+## -----------------------------------------------------------------------------
 c19_working_tall <- c19_working_wide %>% 
   pivot_longer(
     -c(UID, st_county, Combined_Key),
@@ -220,11 +143,9 @@ c19_working_tall <- c19_working_wide %>%
     values_to = "count"
   )
 glimpse(c19_working_tall)
-```
 
-## Build a reference table of population density values from a combination of the ACS and LAD data
 
-```{r}
+## -----------------------------------------------------------------------------
 pop_density <- lad_working %>% 
   inner_join(acs5_working, by = "st_county") %>% 
   mutate(
@@ -242,19 +163,9 @@ pop_density <- lad_working %>%
     pop_gte65
   )
 glimpse(pop_density)
-```
 
 
-
-# Perform an analysis (describe & summarize) and visualize results
-
-* `group` - aggregate values based on one or more grouping variables
-* `summarize` - calculate descriptive statistics for aggregated values
-* `ggplot` - flexible plotting package for incrementally building data visualizations
-
-## Aggregate data across all geographies by calendar date
-
-```{r}
+## -----------------------------------------------------------------------------
 master_ts <- c19_working_tall %>% 
   mutate(
     caldate = mdy(caldate),
@@ -291,11 +202,9 @@ ln_plot + ggtitle("US - Number of confirmed cases (ln)")
 ln_plot + ggtitle("US - Number of confirmed cases (ln)") + geom_smooth(method="lm")
 
 
-```
 
-## Plot growth by state
 
-```{r}
+## -----------------------------------------------------------------------------
 # calculate the start date for confirmed infections within the state (based on first confirmed value within a county within the state)
 state_start <- c19_working_tall %>% 
   filter(str_length(st_county) == 5 & count > 0) %>% 
@@ -360,11 +269,9 @@ ln_plot + ggtitle("Number of confirmed cases (ln) - by state")
 ln_plot + ggtitle("Number of confirmed cases (ln) - by state") + theme_tufte() + theme(legend.position="none")
 
 
-```
 
-## What are the states that are showing long growth curves (is there a problem?)
 
-```{r}
+## -----------------------------------------------------------------------------
 # what are the states that have the long (and early slow) growth curves?
 my_colors <- brewer.pal(8, "Dark2")
 state_density_data_10d <- state_ts %>% 
@@ -515,14 +422,8 @@ plot_data %>%
   kable() %>% 
   kable_styling()
 
-```
 
-```{r}
+
+## -----------------------------------------------------------------------------
 purl('workflow.rmd', output = "workflow.R")
-```
-
-
-
-
-
 
