@@ -1773,8 +1773,9 @@ help(plot)
 ## [7] &quot;package:methods&quot;   &quot;Autoloads&quot;         &quot;package:base&quot;</code></pre>
 <p>RStudio provides a package manager for installing and loading packages into the current project or environment. Packages can also be managed in the console and in scripts using the <code>install.packages()</code> and <code>library()</code> commands.</p>
 <p>Installing packages is best done from the console or the GUI package manager. When writing scripts that use specific packages, be sure to include the necessary <code>library()</code> statements in the script.</p>
-<pre class="r"><code># Install the readr package for importing tabular data from CSV
-# and other text formats.
+<pre class="r"><code># As needed, install packages for the analysis workflow.
+# Note this is not usually something to put in a script.
+
 #install.packages(c(&quot;tidyverse&quot;, &quot;readxl&quot;, &quot;lubridate&quot;)) # commented out - we only need to install once!
 
 # Load the packages that will ce used for the analysis workflow.
