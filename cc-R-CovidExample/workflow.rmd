@@ -1,6 +1,8 @@
 ---
 title: "COVIID-19 R Example"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 This R markdown document provides an example of the basic sequence of commands in R to:
@@ -16,6 +18,7 @@ In this case we will download US COVID-19 infection data for each US county and 
 # Import Libraries
 
 ```{R}
+knitr::opts_chunk$set(message = FALSE)
 library(tidyverse)
 library(readxl)
 library(lubridate)
@@ -39,7 +42,15 @@ These data will be imported from a previously downloaded copy of the data from t
 # relative path and filename for the csv file to be imported
 acs5_filepath <- "data/ACS2018/ACSST5Y2018.S0101_data_with_overlays_2020-04-06T234438.csv"
 acs5_raw <- read_csv(acs5_filepath, col_names = TRUE, skip = 1)
-str(acs5_raw)
+```
+### Column specifications
+
+```{r}
+glimpse(acs5_raw)
+```
+### Import problems
+
+```{r}
 problems(acs5_raw)
 ```
 
@@ -52,10 +63,18 @@ These data will be imported from a previously downloaded copy of the data file t
 # relative path and filename for the xls file to be imported
 lad_filepath <- "data/LandArea/LND01.xls"
 lad_raw <- read_excel(lad_filepath)
-str(lad_raw)
-problems(lad_raw)
 ```
 
+### Column specifications
+
+```{r}
+glimpse(lad_raw)
+```
+### Import problems
+
+```{r}
+problems(lad_raw)
+```
 
 ## C19 data import
 
@@ -67,9 +86,19 @@ These data are going to be directly downloaded from the github repository that t
 # relative path and filename for the xls file to be imported
 c19_filepath <- "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"
 c19_raw <- read_csv(c19_filepath)
-str(c19_raw)
+```
+
+### Column specifications
+
+```{r}
+glimpse(c19_raw)
+```
+### Import problems
+
+```{r}
 problems(c19_raw)
 ```
+
 
 # Reshape and process the data to support an analysis and visualization
 
@@ -111,7 +140,14 @@ acs5_working <- acs5_raw %>%
     pop_75_79 = `Estimate!!Total!!Total population!!AGE!!75 to 79 years`,
     pop_80_84 = `Estimate!!Total!!Total population!!AGE!!80 to 84 years`,
     pop_gt84 =  `Estimate!!Total!!Total population!!AGE!!85 years and over`
+  ) %>% 
+  mutate(
+    pop_lt20 = pop_lt5 + pop_5_9 + pop_10_14 + pop_15_19,
+    pop_gte65 = pop_65_69 + pop_70_74 + pop_75_79 + pop_80_84 + pop_gt84,
+    pct_lt20 = pop_lt20/pop_total,
+    pct_gte65 = pop_gte65/pop_total
   )
+glimpse(acs5_working)
 ```
 
 ## Extract key columns from LAD dataset
@@ -125,6 +161,7 @@ lad_working <- lad_raw %>%
     area_name = Areaname,
     land_area_sqmi = LND110210D
   )
+glimpse(lad_working)
 ```
 
 Build a reference table of state FIPS codes for later use in analysis and visualization
@@ -139,6 +176,7 @@ state_fips <- lad_raw %>%
     st_fips,
     Areaname
   )
+glimpse(state_fips)
 ```
 
 ## Extract and reshape the C19 dataset
@@ -164,7 +202,7 @@ c19_working_wide <- c19_raw %>%
       ),
     st_county
   )
-
+glimpse(c19_working_wide)
 ```
 
 Reshape the infection data file into a tall format that allows for more efficient generation of time-series analysis of data. We are using the `pivot_longer` function instead of the now depricated `gather` function frequently referenced in the context of reshaping data. 
@@ -176,6 +214,26 @@ c19_working_tall <- c19_working_wide %>%
     names_to = "caldate",
     values_to = "count"
   )
+glimpse(c19_working_tall)
+```
+
+## Build a reference table of population density values from a combination of the ACS and LAD data
+
+```{r}
+pop_density <- lad_working %>% 
+  inner_join(acs5_working, by = "st_county") %>% 
+  mutate(
+    den_total = pop_total/land_area_sqmi,
+    den_lt20 = pop_lt20/land_area_sqmi,
+    den_gte65 = pop_gte65/land_area_sqmi
+  ) %>% 
+  select(
+    -starts_with("pop"),
+    -starts_with("pct"),
+    -starts_with("area"), 
+    -id
+  )
+glimpse(pop_density)
 ```
 
 
