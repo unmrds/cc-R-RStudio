@@ -51,7 +51,7 @@ From the _File_ menu, select _New File_ -> _R Script_. The script will open in a
 
 To run a command in the console, type in the command and hit ENTER. To run a command from a script, select the line with the code you want to run and hit CTL+ENTER.
 
-As we saw with Python last month, R can be used like a calculator.
+As with other interactive scripting languages, R can be used like a calculator.
 
 ```{r}
 2 + 3
@@ -66,7 +66,7 @@ As we saw with Python last month, R can be used like a calculator.
 # Square root
 sqrt(144)
 
-# Natural log
+# Natural log (log10() for common [base 10] logs)
 log(10)
 
 # Trig functions
@@ -80,7 +80,7 @@ tan(60)
 ```
 ## Creating Objects
 
-More useful is assigning values to objects and performing operations on them. In R, the assigment operator is `<-`:
+More useful is assigning values to objects and performing operations on them. In R, the assigment operator is `<-` (keyboard shortcut: opt-'-'):
 
 ```{r}
 
@@ -110,7 +110,7 @@ R has a well established system of documentation that is reflected in all of the
 help.start()
 ```
 
-* The help information for specific R functions can be obtained uwing two different commands: `help()` and `?`. 
+* The help information for specific R functions can be obtained using two different commands: `help()` and `?`. 
 
 ```{r}
 # to see the documentation for the plot function
@@ -253,6 +253,10 @@ temp_conversions[1, ] # All elements in first row
 temp_conversions[, 2] # All elements in second column
 
 temp_conversions[3:4, 1:2] # Third and fourth row of first two columns
+
+# conditional subsetting
+temp_conversions[temp_c < 100, ]
+
 ```
 
 `dplyr` is a powerful package that provides intuitive, robust functions for subsetting data.
@@ -260,6 +264,7 @@ temp_conversions[3:4, 1:2] # Third and fourth row of first two columns
 ```{r}
 library(dplyr)
 
+# the "%>%" operator is called a "pipe" and passes the output of one command to the next one
 # Subset by column name
 temp_conversions %>% select(temp_f)
 
@@ -328,7 +333,7 @@ plot(my_lm)
 
 This sample code could be run as a script from the command prompt using the command `Rscript example_01.R`
 
-Dependencies:
+Dependencies for this lesson:
 
 * Current release of R from the [CRAN](https://cran.r-project.org)
 * [RStudio Desktop](https://www.rstudio.com/products/rstudio/download/)
