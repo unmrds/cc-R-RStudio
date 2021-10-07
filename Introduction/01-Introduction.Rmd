@@ -7,9 +7,13 @@ output:
 
 # What is R?
 
+Launch the workshop in RStudio Cloud for the hosted (account required) RStudio environment:
+
+[![RStudio Cloud](images/RstudioCloudButton.png)](https://rstudio.cloud/project/2998636)
+
 R is an [Open Source](https://opensource.org) programming language that is specifically designed for data analysis, especially statistical analyses, and visualization. It consists of the [core R system](https://cran.r-project.org) and a collection of (currently) over [13,000 packages](http://cran.cnr.berkeley.edu) that provide specialized data manipulation, analysis, and visualization capabilities. R is an implementation of the *S* statistical language developed in the mid-1970s at Bell Labs, with the start of development in the early 1990s and a stable beta version available by 2000. R has been under continuous development for over 25 years and has hit major development [milestones](https://en.wikipedia.org/wiki/R_\(programming_language\)#Milestones) over that time. 
 
-R syntax is relatively straighforward and is based on a core principle of providing reasonable default values for many functions, and allowing a lot of flexibility and power through the use of optional parameters. 
+R syntax is relatively straightforward and is based on a core principle of providing reasonable default values for many functions, and allowing a lot of flexibility and power through the use of optional parameters. 
 
 R is an interpreted language. R code does not have to be compiled, but can be executed immediately through an interpreter. When you installed R, it came with an interpreter. Today we are not going to use the default interpreter - we're going to use RStudio, which is an IDE (integrated development environment).
 
