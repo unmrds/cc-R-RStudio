@@ -6,4 +6,8 @@ Launch the workshop in RStudio Cloud for the hosted (account required) RStudio e
 
 [![RStudio Cloud](Introduction/images/RstudioCloudButton.png)](https://rstudio.cloud/project/2998636)
 
+Although the content in this repository is original, portions of the workshop 
+as presented may include examples and exercises from the Data Carpentry 
+lesson, "Data Analysis and Visualization in R for Ecologists:" 
 
+> Forsdick N (2021). “datacarpentry/R-ecology-lesson: Data Carpentry: Data Analysis and Visualization in R for Ecologists, June 2019.” doi: 10.5281/zenodo.3264888, https://datacarpentry.org/R-ecology-lesson/. 
