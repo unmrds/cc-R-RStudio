@@ -1,0 +1,71 @@
+---
+title: "R Tutorial - Baby Name Data"
+author: "Jon Wheeler"
+date: "2022-11-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Getting to Know R and RStudio
+
+### The Console
+
+R is an interpreted language. Code does not have to be compiled in order to 
+run - instead we use an interpreter (vanilla R or the console in RStudio) 
+to execute code on the fly.
+
+We can demonstrate this by using the console as a calculator.
+
+```{r intro_console}
+12 + 12
+12 * 12
+12 ** 2
+144 - 12
+144 / 12
+```
+The console will also echo strings or simple numeric values. 
+
+```{r console_echo}
+12
+'twelve'
+'Greetings from Earth!'
+```
+Note that strings need to be enclosed in quotes. Notice what happens when we
+try to execute the following:
+
+```{r str_error, eval=FALSE}
+twelve
+```
+The term *object* in R is synonymous with *variable*. The
+error message is telling us there is no object or variable named 'twelve' in
+the current environment.
+
+#### Exercise: Please Excuse My Dear Aunt Sally
+
+Something to keep in mind as you code calculations is that mathematical
+operations in R follow the standard order of operation (PEMDAS).
+
+What will be the result of the following command? Test your answer by running
+the command in the console.
+
+How can we change the command to get a result of 42?
+
+```{r exercise_1}
+10 - 3 * 6
+```
+
+### Objects (Variables)
+
+We assign values to objects in R using the *<-* operator. The keyboard shortcut
+for this is **ALT -**. 
+
+```{r assignment}
+exponent = 2
+gross <- 12 ** exponent
+gross_squared <- gross ** exponent
+```
+
+
