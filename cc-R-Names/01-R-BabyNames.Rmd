@@ -16,11 +16,30 @@ different operating systems may behave differently in terms of navigating
 the file system, application permissions, etc.
 
 **Option 1**
+
 1. Download the entire tutorial code repository from GitHub as a zipfile:
 <https://github.com/unmrds/cc-R-RStudio/archive/refs/heads/master.zip>
 2. Extract the contents of the zipfile to your preferred working directory -
 Documents, Desktop, etc.
-3. 
+3. Open the extracted directory, *cc-R-RStudio*, and clicks on the RStudio
+project file, *cc-R-RStudio.Rproj*.
+4. Within the **Files** pane in RStudio, click on the directory 'cc-R-Names'
+to open it.
+5. Click on the *More* button in the **Files** pane and select the option to
+"Set as Working Directory."
+
+**Option 2**
+
+1. Launch RStudio from your operating system's application menu.
+2. The context of the application - the directory it opens into - is most
+likely your home directory. It can be difficult to navigate out of this
+directory in Windows, so we recommend continuing in this directory if you
+use this option.
+3. Using the *New Folder* button in RStudio's **Files** pane, create a new
+folder named 'cc-R-Names.'
+4. Within the **Files** pane in RStudio, click on the new folder to open it.
+5. Click on the *More* button in the **Files** pane and select the option to
+"Set as Working Directory."
 
 ### The Console
 
@@ -104,9 +123,9 @@ As we develop workflows, it can be helpful to monitor changes to object values.
 This is useful especially when we update the values of objects in place.
 
 ```{r update_inplace}
-age <- 18
-age <-  age + 1 # Happy birthday!
-age <- age - 4 # This might not be valid.
+my_age <- 18
+my_age <- my_age + 1 # Happy birthday!
+my_age <- my_age - 4 # This might not be valid.
 ```
 
 The **Environment** tab provides information about different types of objects
@@ -124,6 +143,77 @@ workflows.
 
 For the remainder of this tutorial, we are mainly going to use an R script 
 rather than the console.
+
+#### Exercise: Sanity check.
+
+Let's make sure our working directory is defined so that we can all use the
+same example code and paths to read data.
+
+The following command will output the path from the root of your filesystem
+to the working directory. Everyone's path will be different, but all of our
+paths should end with 'cc-R-Names.'
+
+If your path ends with something different, please let us know.
+
+```{r wd_check}
+# Get working directory
+getwd()
+```
+
+#### Exercise: History Repeats Itself
+
+Our first script is going to demonstrate some time-saving features of RStudio.
+In particular, once we have tested some code in the console, the **History** tab
+gives us a way to automatically copy it to a script.
+
+1. Use the green "plus" icon to create a new file. Alternatively, use the
+menu commands: File -> New File -> R Script. You can also use the keyboard
+shortcut *CTL+SHIFT+N*.
+2. In the console, create an object ```distance_k``` and assign it a value.
+3. Still in the console, create a second object, ```k_m_ratio``` and assign it
+the value 0.62.
+4. Create a third object, ```distance_m``` and define it as the product of
+```distance_k``` * ```k_m_ratio```.
+5. Enter the object name, ```distance_m``` to see the value of the object.
+
+Note that we can use code completion to reduce the amount of typing.
+
+We have working code to convert distances in kilometers to miles, but reusing
+it as-is is cumbersome. Instead, we add the code to our new script file and
+convert arbitrary distances by changing the value of ```distance_k``` and
+running the script.
+
+1. Select the open script tab in the script pane.
+2. Select the **History** tab in the top right pane.
+3. Scroll down as needed to our conversion code.
+4. Highlight a line of code and select **To Source** to copy the code to our
+script file. Do this for each line of code we want to reuse.
+5. **IMPORTANT!** Save the script - RStudio does not 'save' files on creation.
+6. Run the script using the **Source** button. Alternatively, highlight the
+script and use the **Run** button to run the highlighted code.
+7. Wrap the last line in a ```print()``` function to output the value of 
+```distance_m``` to the console.
+
+#### Exercise: Improved Accuracy
+
+The value of the ```k_m_ratio``` used above is rounded to the second decimal
+place. A more accurate conversion can be achieved by including more decimal
+places. The ratio out to 6 decimal places is 0.621371. Try the following:
+
+1. Update the value of ```k_m_ratio``` to a different decimal place.
+2. Add new lines of code to complete a round trip conversion from miles
+back to kilometers.
+3. Convert the result of the round trip conversion to meters.
+
+Be sure to save your script often!
+
+## Working with Data
+
+Under construction. Need to detail:
+
+1. downloading the data into the working directory
+2. extracting
+3. use tab completion to double check
 
 
 
