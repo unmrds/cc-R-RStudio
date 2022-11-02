@@ -11,6 +11,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Getting to Know R and RStudio
 
+Let's set up a workspace. There are a few different ways of doing this, and
+different operating systems may behave differently in terms of navigating
+the file system, application permissions, etc.
+
+**Option 1**
+1. Download the entire tutorial code repository from GitHub as a zipfile:
+<https://github.com/unmrds/cc-R-RStudio/archive/refs/heads/master.zip>
+2. Extract the contents of the zipfile to your preferred working directory -
+Documents, Desktop, etc.
+3. 
+
 ### The Console
 
 R is an interpreted language. Code does not have to be compiled in order to 
@@ -67,5 +78,54 @@ exponent = 2
 gross <- 12 ** exponent
 gross_squared <- gross ** exponent
 ```
+
+Objects can also have string values.
+
+```{r str_assignment}
+pet <- 'gecko'
+```
+
+We can check the data type of an object using the ```class()``` function. We
+will look more closely at data types later.
+
+```{r types}
+class(exponent)
+class(pet)
+```
+
+### The Environment Tab
+
+When we previously executed mathematical operations, the output was printed
+to the console. Notice that when we assign values to objects, the value of the
+object is not printed to the console but is instead displayed in RStudio's
+**Environment** tab.
+
+As we develop workflows, it can be helpful to monitor changes to object values.
+This is useful especially when we update the values of objects in place.
+
+```{r update_inplace}
+age <- 18
+age <-  age + 1 # Happy birthday!
+age <- age - 4 # This might not be valid.
+```
+
+The **Environment** tab provides information about different types of objects
+and data structures.
+
+### The Script Pane
+
+So far we have been working in the console, which is great for testing
+commands, installing packages, getting help, and other things you may only
+want to try out or which don't belong in a script.
+
+Often however, we will do most of our work by running scripts. That's one of
+the advantages of using R - scripts allow us to build scalable, reproducible
+workflows.
+
+For the remainder of this tutorial, we are mainly going to use an R script 
+rather than the console.
+
+
+
 
 
