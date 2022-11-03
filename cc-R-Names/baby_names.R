@@ -14,3 +14,6 @@ View(names2010)
 # View the data in the console
 names2010
 
+# Get information about the structure of the data
+str(names2010)
+

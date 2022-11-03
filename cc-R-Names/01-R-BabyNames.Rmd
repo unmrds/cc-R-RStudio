@@ -343,4 +343,99 @@ View(names2010)
 
 # View the data in the console
 names2010
+
+# Get information about the structure of the data
+# This is a good sanity check to confirm data types are correct,
+# so we will take a moment to review the output.
+str(names2010)
 ```
+
+### Exploring the Data
+
+In addition to inspecting our data, we can use various methods to get 
+information.
+
+```{r explore_data}
+# Get the size of the data
+dim(names2010)
+
+# Get column names
+names(names2010)
+
+# Syntax for selecting a column
+# names2010$name
+
+# Get the count of babies with the most popular name overall.
+# Note this doesn't include the name itself.
+max(names2010$count)
+
+# We can get that information.
+names2010[which.max(names2010$count),]
+
+# Notice the trailing comma. 
+# Think of bracket as slicing by [row(s), column(s)]
+# So if we only want the overall most popular name,
+# we don't even need to include the count.
+names2010[which.max(names2010$count), 1] # 1 for the first column
+```
+
+*Slicing* or subsetting data in R using conditions and index positions of
+rows and columns is an important topic. We can point to resources that go
+into how R indexes dataframes in more detail.
+
+That said, there is a more accessible and human readable way to subset 
+dataframes using the ```dplyr``` library. Today we are going to focus on that.
+
+But first, we looked above at how to get the maximum value within a column. We
+can use the ```summary()``` function to view descriptive statistics for a
+dataframe.
+
+```{r desc_stats}
+# For all columns
+summary(names2010)
+
+# For a single columns
+summary(names2010$count)
+```
+Something to note here is that the 'sex' column is being treated as
+continuous data, whereas it is really categorical data.  Let's see 
+how the descriptive statistics change if we tell R to treat 'sex' as a
+factor (categorical data).
+
+```{r factor_sex}
+names2010$sex <- as.factor(names2010$sex)
+str(names2010$sex)
+```
+
+Comparing the output of our summary function with the previous output,
+we see that the descriptive statistics now include a count of rows by
+category.
+
+```{r desc_factor}
+summary(names2010)
+```
+Converting 'sex' to a factor also makes it possible to plot that variable. R's
+powerful plotting capabilities are one reason for its popularity.
+
+```{r plot_sex}
+plot(names2010$sex)
+```
+
+#### Exercise: On Your Own
+
+Let's take a moment to go back over some of the things we've done. Using the
+commands we've already looked at:
+
+1. Read the 2011 baby name data into an object. Name the object *names2011*.
+2. Identify the most popular name overall in the dataset.
+3. Change the 'sex' column to a factor and generate descriptive statistics 
+showing the total count of babies with SSN registrations by sex.
+4. Plot the distribution of babies by sex.
+
+
+
+
+
+
+
+
