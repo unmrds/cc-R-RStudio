@@ -209,13 +209,15 @@ Be sure to save your script often!
 
 ## Working with Data
 
-Under construction. Need to detail:
+The dataset we are using for this tutorial consists of baby names as
+registered with the US Social Security Administration. 
 
-1. downloading the data into the working directory
-2. extracting
-3. use tab completion to double check
+> Social Security Administration (2022). "Baby Names from Social Security 
+Card Applications - National Data." Accessed from https://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-data
 
-
+The data have been modified to add column names, which are not included in
+the source data. Data from 2010-2021 have been included in the dataset, with
+a file for each year.
 
 
 
