@@ -173,7 +173,7 @@ shortcut *CTL+SHIFT+N*.
 3. Still in the console, create a second object, ```k_m_ratio``` and assign it
 the value 0.62.
 4. Create a third object, ```distance_m``` and define it as the product of
-```distance_k``` \* ```k_m_ratio```.
+```distance_k``` x ```k_m_ratio```.
 5. Enter the object name, ```distance_m``` to see the value of the object.
 
 Note that we can use code completion to reduce the amount of typing.
@@ -300,7 +300,7 @@ new blank script file and save it in our working directory as 'baby_names.R.'
 
 Add these lines:
 
-```{r load_packages, include=False}
+```{r load_packages}
 library(readr)
 library(dplyr)
 library(ggplot2)
@@ -309,7 +309,7 @@ library(ggplot2)
 After running these lines, we can confirm that they have been loaded into
 the environment using the ```search()``` function.
 
-```{r confirm_packages, include=FALSE}
+```{r confirm_packages}
 search()
 ```
 
@@ -322,6 +322,25 @@ developing reusable, reproducible workflows.
 But now if everything is working, we're ready to have fun looking at
 baby names!
 
+### Reading Files
 
+The first thing we need to do is read our data into memory. There are two
+commonly used functions for reading CSV data in R - ```read.csv()```, which
+is part of the standard library, and ```read_csv()```, which comes with the 
+```readr``` package we installed earlier. We're going to use the latter.
 
+```{r read_csv}
+names2010 <- read_csv("./data/2010")
+```
 
+Note that we have created an object, *names2010*, and stored the data as the
+value of that object. The **Environment** tab provides some information
+about the object. We can also inspect it using various commands.
+
+```{r inspect_data}
+# View the data as a table in the file pane
+View(names2010)
+
+# View the data in the console
+names2010
+```
