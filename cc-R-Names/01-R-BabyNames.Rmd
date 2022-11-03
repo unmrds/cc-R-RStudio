@@ -173,7 +173,7 @@ shortcut *CTL+SHIFT+N*.
 3. Still in the console, create a second object, ```k_m_ratio``` and assign it
 the value 0.62.
 4. Create a third object, ```distance_m``` and define it as the product of
-```distance_k``` * ```k_m_ratio```.
+```distance_k``` \* ```k_m_ratio```.
 5. Enter the object name, ```distance_m``` to see the value of the object.
 
 Note that we can use code completion to reduce the amount of typing.
@@ -213,11 +213,115 @@ The dataset we are using for this tutorial consists of baby names as
 registered with the US Social Security Administration. 
 
 > Social Security Administration (2022). "Baby Names from Social Security 
-Card Applications - National Data." Accessed from https://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-data
+Card Applications - National Data." Accessed from <https://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-data>
 
 The data have been modified to add column names, which are not included in
 the source data. Data from 2010-2021 have been included in the dataset, with
 a file for each year.
+
+The dataset can be accessed different ways. 
+
+**Option 1**
+
+1. If you downloaded the full repository from GitHUb earlier, the data were
+included in the zipfile, Looking at the **Files** tab in the lower right
+hand pane in RStudio, there should be a *data* directory. The baby name 
+data files are in this directory.
+2. Please note that you can ignore the file "data.zip," as the data have
+already been extracted into the *data* directory if you used this option.
+
+**Option 2**
+
+1. Download the file "data.zip" from the GitHub repository.
+<https://github.com/unmrds/cc-R-RStudio/raw/master/cc-R-Names/data.zip>
+2. Extract the contents of the zipfile into the working directory. There are
+a few different ways to do this. A method that will work on most operating
+systems is:
+  1. Double click the zipfile to open it.
+  2. Right click and copy the 'data' directory inside the zipfile. You can also
+  highlight the directory with your cursor and type CONTROL+C to copy it.
+  3. Using your system's file management GUI, navigate to the 'cc-R-Names'
+  directory we've set as our working directory. Right-click and select 'paste'
+  to paste the data directory into the working directory. Alternatively, you
+  can use CONTROL-V to paste.
+  
+
+#### Exercise: Got Data?
+
+Let's confirm that we all have the data in a place where we can use the same
+path in our scripts to read the data files.
+
+The output of the following command should be 
+
+> [1] "2010" "2011" "2012" "2013" "2014" "2015" "2016" "2017" "2018" "2019"
+"2020" "2021"
+
+Please let us know if you get a different output.
+
+```{r check_data}
+list.files("./data/")
+```
+### R Packages
+
+One of the strengths of R is the large community of users and the number of 
+community-developed packages that add functionality to the base environment.
+
+For our analysis of baby names, we're going to use some of the more popular
+packages for data science and visualization. If we're using R and RStudio for
+the first time, it's likely that these packages will need to be installed.
+
+We will install 3 packages:
+
+* readr
+* dplyr
+* ggplot2
+
+If you have previously installed the *tidyverse,* then you already have these
+packages. 
+
+We can install, verify, and load packages in the **Packages** tab in the 
+lower right pane of RStudio. We can also use the following commands - note 
+however that the ```install.packages``` command should be run in the console 
+and not included in scripts.
+
+```{r install_packages, eval=FALSE, include=FALSE}
+install.packages('readr')
+install.packages('dplyr')
+install.packages('ggplot2')
+```
+It may take a moment for the packages to install. If you have not already 
+installed the tidyverse, we do recommend doing that sometime after this
+workshop. However, it's a large meta-package that can take a while to install,
+so we prefer to work with the individual packages during workshops.
+
+Once we have installed packages, we need to load them into our environment.
+This is something we definitely want to include in our scripts. Let's create a
+new blank script file and save it in our working directory as 'baby_names.R.'
+
+Add these lines:
+
+```{r load_packages, include=False}
+library(readr)
+library(dplyr)
+library(ggplot2)
+```
+
+After running these lines, we can confirm that they have been loaded into
+the environment using the ```search()``` function.
+
+```{r confirm_packages, include=FALSE}
+search()
+```
+
+Admittedly, we have spent a good bit of our time so far setting up and
+double-checking our environment. We recommend making this a part of your
+regular workflow - being explicit and careful about documenting paths within
+your environment and packages used in an analysis is a key aspect of
+developing reusable, reproducible workflows.
+
+But now if everything is working, we're ready to have fun looking at
+baby names!
+
 
 
 
