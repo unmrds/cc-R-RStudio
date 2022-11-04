@@ -87,7 +87,7 @@ How can we change the command to get a result of 42?
 10 - 3 * 6
 ```
 
-### Objects (Variables)
+### Objects
 
 We assign values to objects in R using the *<-* operator. The keyboard shortcut
 for this is **ALT -**. 
@@ -431,6 +431,242 @@ commands we've already looked at:
 3. Change the 'sex' column to a factor and generate descriptive statistics 
 showing the total count of babies with SSN registrations by sex.
 4. Plot the distribution of babies by sex.
+
+```{r solution}
+names2011 <- read_csv("./data/2011")
+names2011[which.max(names2011$count), 1]
+names2011$sex <- as.factor(names2011$sex)
+summary(names2011)
+plot(names2011$sex)
+```
+
+## Manipultaing Data with ```dplyr```
+
+```{r intro_dplyr}
+# Another way to get the most popular baby name
+# introducing a new operator - the margittr: %>%
+# CTL+SHIFT+M
+# explain what is a pipe - output of one command as input to another
+names2011 %>% 
+  filter(count == max(count))
+
+# That is longer than our previous solution but much easier to read
+# and we can add more conditions - in both years so far the most popular
+# name has been a girl's name. What is the most popular boy's name?
+names2011 %>%
+  filter(sex == "M") %>% 
+  filter(count == max(count))
+```
+
+#### Exercise
+
+Daisy-chaining pipes versus using multiple conditions.
+
+```{r order_pipes}
+# Why does this work:
+names2011 %>% 
+  filter(sex == "F" & count == max(count))
+
+# But this doesn't?
+# Note - it is 'working' in that it doesn't throw an error
+# but there is no row that satisfies both conditions
+names2011 %>% 
+  filter(sex == "M" & count == max(count))
+```
+Get the most popular name for both sexes.
+
+```{r both_popular}
+names2011 %>% 
+  group_by(sex) %>% 
+  summarise(popular_name = name[which.max(count)], # note we select a 
+            count = max(count))
+
+names2010 %>% 
+  group_by(sex) %>% 
+  summarise(popular_name = name[which.max(count)], # note we select a 
+            count = max(count))
+```
+
+Filter, group by, and summarise are three common dplyr methods. Two more are
+select and mutate.
+
+```{r dplyr_methods}
+names2010 %>%
+  select(name, count)
+
+names2010 %>% 
+  select(name) %>% 
+  # Let's say for some reason we wanted to uppercase the name
+  mutate(uppercase = toupper(name))
+```
+**Order of methods matters!**
+
+### Combine Dataframes
+
+The most popular girl's name changed between 2010 and 2011. The most popular
+boy's name was the same, but what are the most popular names across the two
+years?
+
+
+```{r merge}
+# FIRST! Notice our data do not have a column for the year - that
+# data is only included in the filename.
+# Let's add a column for the year before merging
+names2010$year <- '2010'
+names2011$year <- '2011'
+
+# There are a couple ways to do this
+long_names <- rbind(names2010, names2011)
+str(long_names)
+
+# Using dplyr append
+long_names_2 <- names2010 %>% 
+  bind_rows(names2011)
+str(long_names_2)
+```
+
+Many if not most names will now probably occur twice:
+
+```{r count_sophia}
+long_names %>% 
+  filter(name == 'Sophia')
+
+# Did not expect that!
+# We can show that this is in the raw data...
+# but Sophia is not a popular boy's name so we will filter for that
+long_names %>% 
+  filter(name == "Sophia" & sex == "F")
+
+# So now we need to start aggregating the data.
+# Split (group), apply (calculate), combine (aggregate)
+```
+```{r split_apply}
+# Let's create an object to hold the aggregate data
+name_trends <- long_names %>% 
+  group_by(name, sex) %>% 
+  mutate(total = sum(count)) %>% 
+  filter(sex == "F") %>% 
+  select(name, sex, total) %>% 
+  head(5) # top 5 names
+name_trends
+```
+
+A different way to get the same result:
+
+```{r sac_2}
+name_trends <- 
+  long_names %>% 
+  group_by(name, sex) %>% 
+  filter(sex == "F") %>% 
+  summarise(total = sum(count)) %>% 
+  arrange(desc(total)) %>% 
+  head(5)
+name_trends
+```
+
+The former approach allows us to more easily get the most popular name for
+both boys and girls.
+
+```{r both_pop}
+most_popular <- long_names %>% 
+  group_by(name, sex) %>% 
+  mutate(total = sum(count)) %>% 
+  select(name, sex, total) %>% 
+  # We can regroup our subset!
+  group_by(sex) %>% 
+  summarise(popular_name = name[which.max(total)], t = max(total))
+most_popular
+```
+
+
+#### Exercise: The Winner Is...
+
+Combine the data from years 2012-2015 to the 'long_names' dataframe. What
+are the most popular girl's and boy's names for the timeframe 2010-2015?
+
+```{r solution, include=FALSE}
+names2012 = read_csv("./data/2012")
+names2012$year <- '2012'
+
+names2013 = read_csv("./data/2013") 
+names2013$year <- '2013'
+
+names2014 = read_csv("./data/2014")
+names2014$year <-  '2014'
+
+names2015 = read_csv("./data/2015")
+names2015$year <- '2015'
+
+six_years = rbind(long_names, names2012, names2013, names2014, names2015)
+str(six_years)
+```
+
+```{r both_pop}
+most_popular <- six_years %>% 
+  group_by(name, sex) %>% 
+  mutate(total = sum(count)) %>% 
+  select(name, sex, total) %>% 
+  # We can regroup our subset!
+  group_by(sex) %>% 
+  summarise(popular_name = name[which.max(total)], t = max(total))
+most_popular
+```
+
+#### Exercise: How common is your name?
+
+Using dplyr, calculate the following:
+
+1. How many babies in the dataset have your name?
+2. Extra challenge: What is the rank of your name? The proportion of babies with
+your name?
+
+```{r s1}
+my_name <- six_years %>% 
+  group_by(name) %>% 
+  filter(name == "Jonathan") %>% 
+  summarise(num_babies = sum(count))
+my_name
+```
+
+```{r s2}
+boys <- six_years %>% 
+  filter(sex == "M")
+gt <- sum(boys$count)
+rank_name <- boys %>%
+  group_by(name) %>% 
+  summarise(total = sum(count)) %>% 
+  arrange(desc(total)) %>% 
+  mutate(rank = 1:n(), proportion = round((total/gt)*100, 3)) %>% # from 1 to n()
+  filter(name == "Jonathan")
+rank_name
+```
+
+
+### Plotting
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
