@@ -432,7 +432,7 @@ commands we've already looked at:
 showing the total count of babies with SSN registrations by sex.
 4. Plot the distribution of babies by sex.
 
-```{r solution}
+```{r solution_a}
 names2011 <- read_csv("./data/2011")
 names2011[which.max(names2011$count), 1]
 names2011$sex <- as.factor(names2011$sex)
@@ -584,7 +584,7 @@ most_popular
 Combine the data from years 2012-2015 to the 'long_names' dataframe. What
 are the most popular girl's and boy's names for the timeframe 2010-2015?
 
-```{r solution, include=FALSE}
+```{r solution}
 names2012 = read_csv("./data/2012")
 names2012$year <- '2012'
 
@@ -601,7 +601,7 @@ six_years = rbind(long_names, names2012, names2013, names2014, names2015)
 str(six_years)
 ```
 
-```{r both_pop}
+```{r both_pop2}
 most_popular <- six_years %>% 
   group_by(name, sex) %>% 
   mutate(total = sum(count)) %>% 
@@ -644,21 +644,96 @@ rank_name
 
 ### Plotting
 
+We now have a pretty large dataset with annual baby name data. We've manipulated
+the data to tease out data points and aggregations.
+
+Plotting allows us to visualize trends. For example, we know Sophia and Isabella
+are popular girl's names. We can plot their relative popularity.
+
+```{r plot}
+# First, create a subset
+sophia <- six_years %>% 
+  filter(sex == "F" & name == "Sophia")
+sophia
+
+# now plot
+sophia_plot <- ggplot(sophia, aes(year,count))
+sophia_plot + geom_point()
+```
+
+Two names
 
 
+```{r plot2}
+# First, create a subset
+names_compare <- six_years %>% 
+  filter(sex == "F" & (name == "Sophia" | name == "Isabella"))
+names_compare
+
+# now plot
+names_plot <- ggplot(names_compare, aes(year,count))
+names_plot + geom_point(aes(color=name))
+```
+
+```{r plot3}
+# First, create a subset
+names_compare <- six_years %>% 
+  filter(sex == "F" & (name == "Sophia" | name == "Isabella"))
+names_compare
+
+# now plot
+names_plot <- ggplot(names_compare, aes(year, count, group=name))
+names_plot + geom_line(aes(color=name)) + geom_point(aes(color=name))
+```
 
 
+```{r plot4}
+# First, create a subset
+names_compare <- six_years %>% 
+  filter(sex == "F" & (name == "Sophia" | name == "Isabella"))
+names_compare
+
+# now plot
+names_plot <- ggplot(names_compare, aes(year, count, group=name))
+names_plot + geom_line(aes(color=name)) + geom_point(aes(color=name)) +
+  labs(x = "Year", y = "Count", title = "Name Comparison: Sophia and Isabella")
+```
 
 
+```{r plot5}
+# First, create a subset
+names_compare <- six_years %>% 
+  filter(sex == "F" & (name == "Sophia" | name == "Isabella"))
+names_compare
+
+# now plot
+# other themes: light, minimal, classic
+names_plot <- ggplot(names_compare, aes(year, count, group=name))
+names_plot + geom_line(aes(color=name)) + geom_point(aes(color=name)) +
+  labs(x = "Year", y = "Count", title = "Name Comparison: Sophia and Isabella") +
+  theme_light()
+```
 
 
+### Exericse: Your name plot
 
+Plot the trend in your name against another name.
 
+How would we include even more names?
 
+```{r plot6}
+# First, create a subset
+names_compare <- six_years %>% 
+  filter(sex == "M" & (name == "Jacob" | name == "Jonathan" | name == "Todd"))
+names_compare
 
-
-
-
+# now plot
+# other themes: light, minimal, classic
+names_plot <- ggplot(names_compare, aes(year, count, group=name))
+names_plot + geom_line(aes(color=name)) + geom_point(aes(color=name)) +
+  labs(x = "Year", y = "Count", title = "Name Comparison: Sophia and Isabella") +
+  theme_light()
+```
 
 
 
