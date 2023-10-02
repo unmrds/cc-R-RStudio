@@ -13,33 +13,18 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Let's set up a workspace. There are a few different ways of doing this, and
 different operating systems may behave differently in terms of navigating
-the file system, application permissions, etc.
-
-**Option 1**
-
-1. Download the entire tutorial code repository from GitHub as a zipfile:
-<https://github.com/unmrds/cc-R-RStudio/archive/refs/heads/master.zip>
-2. Extract the contents of the zipfile to your preferred working directory -
-Documents, Desktop, etc.
-3. Open the extracted directory, *cc-R-RStudio*, and clicks on the RStudio
-project file, *cc-R-RStudio.Rproj*.
-4. Within the **Files** pane in RStudio, click on the directory 'cc-R-Names'
-to open it.
-5. Click on the *More* button in the **Files** pane and select the option to
-"Set as Working Directory."
-
-**Option 2**
+the file system, application permissions, etc. For these reasons, we will
+use RStudio to create the project working directory.
 
 1. Launch RStudio from your operating system's application menu.
-2. The context of the application - the directory it opens into - is most
+1. The context of the application - the directory it opens into - is most
 likely your home directory. It can be difficult to navigate out of this
 directory in Windows, so we recommend continuing in this directory if you
 use this option.
-3. Using the *New Folder* button in RStudio's **Files** pane, create a new
-folder named 'cc-R-Names.'
-4. Within the **Files** pane in RStudio, click on the new folder to open it.
-5. Click on the *More* button in the **Files** pane and select the option to
-"Set as Working Directory."
+1. Use the *New Project* icon or command (under the *File* menu) to create a
+new project. 
+1. Using the *New Folder* button in RStudio's **Files** pane, create two
+folders named 'data' and 'scripts'.
 
 ### The Console
 
@@ -219,32 +204,15 @@ The data have been modified to add column names, which are not included in
 the source data. Data from 2010-2021 have been included in the dataset, with
 a file for each year.
 
-The dataset can be accessed different ways. 
+The dataset can be accessed different ways. For today's tutorial, we will
+download the file directly to the project working directory that we
+created above.
 
-**Option 1**
 
-1. If you downloaded the full repository from GitHUb earlier, the data were
-included in the zipfile, Looking at the **Files** tab in the lower right
-hand pane in RStudio, there should be a *data* directory. The baby name 
-data files are in this directory.
-2. Please note that you can ignore the file "data.zip," as the data have
-already been extracted into the *data* directory if you used this option.
-
-**Option 2**
-
-1. Download the file "data.zip" from the GitHub repository.
-<https://github.com/unmrds/cc-R-RStudio/raw/master/cc-R-Names/data.zip>
-2. Extract the contents of the zipfile into the working directory. There are
-a few different ways to do this. A method that will work on most operating
-systems is:
-  1. Double click the zipfile to open it.
-  2. Right click and copy the 'data' directory inside the zipfile. You can also
-  highlight the directory with your cursor and type CONTROL+C to copy it.
-  3. Using your system's file management GUI, navigate to the 'cc-R-Names'
-  directory we've set as our working directory. Right-click and select 'paste'
-  to paste the data directory into the working directory. Alternatively, you
-  can use CONTROL-V to paste.
-  
+```{r download data files}
+file_url <- 'https://raw.githubusercontent.com/unmrds/cc-R-RStudio/master/cc-R-Names/data/2010'
+download.file(file_url, './data/2010')
+```
 
 #### Exercise: Got Data?
 
