@@ -22,9 +22,17 @@ likely your home directory. It can be difficult to navigate out of this
 directory in Windows, so we recommend continuing in this directory if you
 use this option.
 1. Use the *New Project* icon or command (under the *File* menu) to create a
-new project. 
-1. Using the *New Folder* button in RStudio's **Files** pane, create two
-folders named 'data' and 'scripts'.
+new project. Alternatively, click on the project icon in the top right of the
+application window and select *New Project...*.
+1. Select *New Directory* and from the available options. 
+1. Select *New Project* from the list of project types.
+1. Give the project directory a name - try *cc-R-RStudio* - and click the
+*Browse* button to select the location in your file system where the project
+will be stored. We recommend storing it in whichever directory you generally
+prefer to work in.
+1. When ready, select the button to *Create Project*.
+1. Using the *New Folder* button in RStudio's **Files** pane, create a
+folder named 'data'.
 
 ### The Console
 
@@ -110,7 +118,7 @@ This is useful especially when we update the values of objects in place.
 ```{r update_inplace}
 my_age <- 18
 my_age <- my_age + 1 # Happy birthday!
-my_age <- my_age - 4 # This might not be valid.
+my_age <- my_age - 40 # This might not be valid.
 ```
 
 The **Environment** tab provides information about different types of objects
@@ -221,8 +229,7 @@ path in our scripts to read the data files.
 
 The output of the following command should be 
 
-> [1] "2010" "2011" "2012" "2013" "2014" "2015" "2016" "2017" "2018" "2019"
-"2020" "2021"
+> [1] "2010"
 
 Please let us know if you get a different output.
 
@@ -394,13 +401,16 @@ plot(names2010$sex)
 Let's take a moment to go back over some of the things we've done. Using the
 commands we've already looked at:
 
-1. Read the 2011 baby name data into an object. Name the object *names2011*.
+1. Read the 2011 baby name data into an object. Name the object *names2011*. 
+The url for the 2011 data is https://raw.githubusercontent.com/unmrds/cc-R-RStudio/master/cc-R-Names/data/2011
 2. Identify the most popular name overall in the dataset.
 3. Change the 'sex' column to a factor and generate descriptive statistics 
 showing the total count of babies with SSN registrations by sex.
 4. Plot the distribution of babies by sex.
 
 ```{r solution_a}
+file_url <-  'https://raw.githubusercontent.com/unmrds/cc-R-RStudio/master/cc-R-Names/data/2011'
+download.file(file_url, './data/2011')
 names2011 <- read_csv("./data/2011")
 names2011[which.max(names2011$count), 1]
 names2011$sex <- as.factor(names2011$sex)
