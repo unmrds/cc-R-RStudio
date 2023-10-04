@@ -18,10 +18,8 @@ use RStudio to create the project working directory.
 
 1. Launch RStudio from your operating system's application menu.
 1. The context of the application - the directory it opens into - is most
-likely your home directory. It can be difficult to navigate out of this
-directory in Windows, so we recommend continuing in this directory if you
-use this option.
-1. Use the *New Project* icon or command (under the *File* menu) to create a
+likely your home directory.
+1. Use the *New Project* command (under the *File* menu) to create a
 new project. Alternatively, click on the project icon in the top right of the
 application window and select *New Project...*.
 1. Select *New Directory* and from the available options. 
@@ -29,7 +27,7 @@ application window and select *New Project...*.
 1. Give the project directory a name - try *cc-R-RStudio* - and click the
 *Browse* button to select the location in your file system where the project
 will be stored. We recommend storing it in whichever directory you generally
-prefer to work in.
+prefer to work in (Desktop, Documents, Home, etc.).
 1. When ready, select the button to *Create Project*.
 1. Using the *New Folder* button in RStudio's **Files** pane, create a
 folder named 'data'.
@@ -37,8 +35,8 @@ folder named 'data'.
 ### The Console
 
 R is an interpreted language. Code does not have to be compiled in order to 
-run - instead we use an interpreter (vanilla R or the console in RStudio) 
-to execute code on the fly.
+run - instead we use an interpreter (standalone R or the console in RStudio) 
+to execute code interactively.
 
 We can demonstrate this by using the console as a calculator.
 
@@ -62,22 +60,26 @@ try to execute the following:
 ```{r str_error, eval=FALSE}
 twelve
 ```
-The term *object* in R is synonymous with *variable*. The
+The term *object* in R is generally synonymous with *variable*. The
 error message is telling us there is no object or variable named 'twelve' in
 the current environment.
 
+Standard convention in R is to use the term *object* for stored values, data
+structures, etc. This is to prevent confusion with the term *variable* as it
+is understood in statistics.
+
 #### Exercise: Please Excuse My Dear Aunt Sally
 
-Something to keep in mind as you code calculations is that mathematical
+Something to keep in mind as you develop calculations is that mathematical
 operations in R follow the standard order of operation (PEMDAS).
 
 What will be the result of the following command? Test your answer by running
 the command in the console.
 
-How can we change the command to get a result of 42?
+How can we change the command to get a result of 56?
 
 ```{r exercise_1}
-10 - 3 * 6
+10 - 3 * 8
 ```
 
 ### Objects
@@ -144,9 +146,10 @@ same example code and paths to read data.
 
 The following command will output the path from the root of your filesystem
 to the working directory. Everyone's path will be different, but all of our
-paths should end with 'cc-R-Names.'
+paths should end with the name we gave our project folders when we created
+a new project, earlier.
 
-If your path ends with something different, please let us know.
+If your path ends with something unexpected, please let us know.
 
 ```{r wd_check}
 # Get working directory
@@ -209,13 +212,14 @@ registered with the US Social Security Administration.
 Card Applications - National Data." Accessed from <https://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-data>
 
 The data have been modified to add column names, which are not included in
-the source data. Data from 2010-2021 have been included in the dataset, with
-a file for each year.
+the source data. Data from 2010-2021 have been included in the full dataset
+on GutHub, with file for each year. For the first part of this tutorial we 
+will only used data from 2010 and 2011.
 
-The dataset can be accessed different ways. For today's tutorial, we will
-download the file directly to the project working directory that we
-created above.
+The dataset can be accessed different ways. Here we demonstrate how to
+download the file directly to the project directory that we created above.
 
+Note that the URL can be copied and pasted from the shared notes document.
 
 ```{r download data files}
 file_url <- 'https://raw.githubusercontent.com/unmrds/cc-R-RStudio/master/cc-R-Names/data/2010'
@@ -325,7 +329,7 @@ names2010
 str(names2010)
 ```
 
-### Exploring the Data
+### Inspect the Data
 
 In addition to inspecting our data, we can use various methods to get 
 information.
@@ -342,16 +346,12 @@ names(names2010)
 
 # Get the count of babies with the most popular name overall.
 # Note this doesn't include the name itself.
+
+# We can get the name and other aggregations using base R methods
+# but for now we will pass on that and just get the maximum of the count field. 
+# In a minute we will introduce dplyr, which offers similar functionality
+# but allows us to develop more human readable workflows.
 max(names2010$count)
-
-# We can get that information.
-names2010[which.max(names2010$count),]
-
-# Notice the trailing comma. 
-# Think of bracket as slicing by [row(s), column(s)]
-# So if we only want the overall most popular name,
-# we don't even need to include the count.
-names2010[which.max(names2010$count), 1] # 1 for the first column
 ```
 
 *Slicing* or subsetting data in R using conditions and index positions of
@@ -422,13 +422,14 @@ plot(names2011$sex)
 
 ```{r intro_dplyr}
 # Another way to get the most popular baby name
-# introducing a new operator - the margittr: %>%
+# introducing a new operator - the margittr pipe: %>%
 # CTL+SHIFT+M
 # explain what is a pipe - output of one command as input to another
 names2011 %>% 
   filter(count == max(count))
 
-# That is longer than our previous solution but much easier to read
+# That is longer than the base R syntax for pulling this same data point
+# but is much easier to read
 # and we can add more conditions - in both years so far the most popular
 # name has been a girl's name. What is the most popular boy's name?
 names2011 %>%
@@ -448,9 +449,12 @@ names2011 %>%
 # But this doesn't?
 # Note - it is 'working' in that it doesn't throw an error
 # but there is no row that satisfies both conditions
+# because the max count value in the dataset is for a girl name
 names2011 %>% 
   filter(sex == "M" & count == max(count))
 ```
+
+
 Get the most popular name for both sexes.
 
 ```{r both_popular}
@@ -477,6 +481,8 @@ names2010 %>%
   # Let's say for some reason we wanted to uppercase the name
   mutate(uppercase = toupper(name))
 ```
+
+
 **Order of methods matters!**
 
 ### Combine Dataframes
@@ -497,7 +503,7 @@ names2011$year <- '2011'
 long_names <- rbind(names2010, names2011)
 str(long_names)
 
-# Using dplyr append
+# Using dplyr bind_rows
 long_names_2 <- names2010 %>% 
   bind_rows(names2011)
 str(long_names_2)
@@ -558,6 +564,19 @@ most_popular
 
 
 #### Exercise: The Winner Is...
+
+Before we can proceed with the next exercise, we need to download the rest of
+the data. We could use the same process as above, but since there are several
+files (through 2021) it makes sense to download the zip file of all the data
+from the repository for this workshop. Then we can extract is all to our *data*
+directory.
+
+Before proceeding, be sure to check that all of the data are in the right
+place.
+
+```{r check contents of data directory}
+list.files('./data/')
+```
 
 Combine the data from years 2012-2015 to the 'long_names' dataframe. What
 are the most popular girl's and boy's names for the timeframe 2010-2015?
