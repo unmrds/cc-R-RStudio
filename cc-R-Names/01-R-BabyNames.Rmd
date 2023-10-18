@@ -571,6 +571,12 @@ files (through 2021) it makes sense to download the zip file of all the data
 from the repository for this workshop. Then we can extract is all to our *data*
 directory.
 
+```{r}
+zip_url <- "https://github.com/unmrds/cc-R-RStudio/raw/master/cc-R-Names/data.zip"
+download.file(zip_url, 'data.zip')
+unzip('data.zip', exdir = '.')
+```
+
 Before proceeding, be sure to check that all of the data are in the right
 place.
 

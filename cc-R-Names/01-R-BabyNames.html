@@ -367,20 +367,27 @@ directory.</p>
 <ol style="list-style-type: decimal">
 <li>Launch RStudio from your operating system’s application menu.</li>
 <li>The context of the application - the directory it opens into - is
-most likely your home directory. It can be difficult to navigate out of
-this directory in Windows, so we recommend continuing in this directory
-if you use this option.</li>
-<li>Use the <em>New Project</em> icon or command (under the
-<em>File</em> menu) to create a new project.</li>
+most likely your home directory.</li>
+<li>Use the <em>New Project</em> command (under the <em>File</em> menu)
+to create a new project. Alternatively, click on the project icon in the
+top right of the application window and select <em>New
+Project…</em>.</li>
+<li>Select <em>New Directory</em> and from the available options.</li>
+<li>Select <em>New Project</em> from the list of project types.</li>
+<li>Give the project directory a name - try <em>cc-R-RStudio</em> - and
+click the <em>Browse</em> button to select the location in your file
+system where the project will be stored. We recommend storing it in
+whichever directory you generally prefer to work in (Desktop, Documents,
+Home, etc.).</li>
+<li>When ready, select the button to <em>Create Project</em>.</li>
 <li>Using the <em>New Folder</em> button in RStudio’s
-<strong>Files</strong> pane, create two folders named ‘data’ and
-‘scripts’.</li>
+<strong>Files</strong> pane, create a folder named ‘data’.</li>
 </ol>
 <div id="the-console" class="section level3">
 <h3>The Console</h3>
 <p>R is an interpreted language. Code does not have to be compiled in
-order to run - instead we use an interpreter (vanilla R or the console
-in RStudio) to execute code on the fly.</p>
+order to run - instead we use an interpreter (standalone R or the
+console in RStudio) to execute code interactively.</p>
 <p>We can demonstrate this by using the console as a calculator.</p>
 <pre class="r"><code>12 + 12</code></pre>
 <pre><code>## [1] 24</code></pre>
@@ -402,19 +409,22 @@ in RStudio) to execute code on the fly.</p>
 <p>Note that strings need to be enclosed in quotes. Notice what happens
 when we try to execute the following:</p>
 <pre class="r"><code>twelve</code></pre>
-<p>The term <em>object</em> in R is synonymous with <em>variable</em>.
-The error message is telling us there is no object or variable named
-‘twelve’ in the current environment.</p>
+<p>The term <em>object</em> in R is generally synonymous with
+<em>variable</em>. The error message is telling us there is no object or
+variable named ‘twelve’ in the current environment.</p>
+<p>Standard convention in R is to use the term <em>object</em> for
+stored values, data structures, etc. This is to prevent confusion with
+the term <em>variable</em> as it is understood in statistics.</p>
 <div id="exercise-please-excuse-my-dear-aunt-sally" class="section level4">
 <h4>Exercise: Please Excuse My Dear Aunt Sally</h4>
-<p>Something to keep in mind as you code calculations is that
+<p>Something to keep in mind as you develop calculations is that
 mathematical operations in R follow the standard order of operation
 (PEMDAS).</p>
 <p>What will be the result of the following command? Test your answer by
 running the command in the console.</p>
-<p>How can we change the command to get a result of 42?</p>
-<pre class="r"><code>10 - 3 * 6</code></pre>
-<pre><code>## [1] -8</code></pre>
+<p>How can we change the command to get a result of 56?</p>
+<pre class="r"><code>10 - 3 * 8</code></pre>
+<pre><code>## [1] -14</code></pre>
 </div>
 </div>
 <div id="objects" class="section level3">
@@ -445,7 +455,7 @@ object values. This is useful especially when we update the values of
 objects in place.</p>
 <pre class="r"><code>my_age &lt;- 18
 my_age &lt;- my_age + 1 # Happy birthday!
-my_age &lt;- my_age - 4 # This might not be valid.</code></pre>
+my_age &lt;- my_age - 40 # This might not be valid.</code></pre>
 <p>The <strong>Environment</strong> tab provides information about
 different types of objects and data structures.</p>
 </div>
@@ -465,8 +475,9 @@ script rather than the console.</p>
 use the same example code and paths to read data.</p>
 <p>The following command will output the path from the root of your
 filesystem to the working directory. Everyone’s path will be different,
-but all of our paths should end with ‘cc-R-Names.’</p>
-<p>If your path ends with something different, please let us know.</p>
+but all of our paths should end with the name we gave our project
+folders when we created a new project, earlier.</p>
+<p>If your path ends with something unexpected, please let us know.</p>
 <pre class="r"><code># Get working directory
 getwd()</code></pre>
 <pre><code>## [1] &quot;C:/Users/jwheel01/Desktop/cc-R-RStudio/cc-R-Names&quot;</code></pre>
@@ -539,43 +550,22 @@ Security Card Applications - National Data.” Accessed from <a href="https://ca
 </blockquote>
 <p>The data have been modified to add column names, which are not
 included in the source data. Data from 2010-2021 have been included in
-the dataset, with a file for each year.</p>
-<p>The dataset can be accessed different ways. For today’s tutorial, we
-will download the file directly to the project working directory that we
-created aboe.</p>
-<p><strong>Option 1</strong></p>
-<ol style="list-style-type: decimal">
-<li>If you downloaded the full repository from GitHUb earlier, the data
-were included in the zipfile, Looking at the <strong>Files</strong> tab
-in the lower right hand pane in RStudio, there should be a <em>data</em>
-directory. The baby name data files are in this directory.</li>
-<li>Please note that you can ignore the file “data.zip,” as the data
-have already been extracted into the <em>data</em> directory if you used
-this option.</li>
-</ol>
-<p><strong>Option 2</strong></p>
-<ol style="list-style-type: decimal">
-<li>Download the file “data.zip” from the GitHub repository. <a href="https://github.com/unmrds/cc-R-RStudio/raw/master/cc-R-Names/data.zip" class="uri">https://github.com/unmrds/cc-R-RStudio/raw/master/cc-R-Names/data.zip</a></li>
-<li>Extract the contents of the zipfile into the working directory.
-There are a few different ways to do this. A method that will work on
-most operating systems is:</li>
-<li>Double click the zipfile to open it.</li>
-<li>Right click and copy the ‘data’ directory inside the zipfile. You
-can also highlight the directory with your cursor and type CONTROL+C to
-copy it.</li>
-<li>Using your system’s file management GUI, navigate to the
-‘cc-R-Names’ directory we’ve set as our working directory. Right-click
-and select ‘paste’ to paste the data directory into the working
-directory. Alternatively, you can use CONTROL-V to paste.</li>
-</ol>
+the full dataset on GutHub, with file for each year. For the first part
+of this tutorial we will only used data from 2010 and 2011.</p>
+<p>The dataset can be accessed different ways. Here we demonstrate how
+to download the file directly to the project directory that we created
+above.</p>
+<p>Note that the URL can be copied and pasted from the shared notes
+document.</p>
+<pre class="r"><code>file_url &lt;- &#39;https://raw.githubusercontent.com/unmrds/cc-R-RStudio/master/cc-R-Names/data/2010&#39;
+download.file(file_url, &#39;./data/2010&#39;)</code></pre>
 <div id="exercise-got-data" class="section level4">
 <h4>Exercise: Got Data?</h4>
 <p>Let’s confirm that we all have the data in a place where we can use
 the same path in our scripts to read the data files.</p>
 <p>The output of the following command should be</p>
 <blockquote>
-<p>[1] “2010” “2011” “2012” “2013” “2014” “2015” “2016” “2017” “2018”
-“2019” “2020” “2021”</p>
+<p>[1] “2010”</p>
 </blockquote>
 <p>Please let us know if you get a different output.</p>
 <pre class="r"><code>list.files(&quot;./data/&quot;)</code></pre>
@@ -695,8 +685,8 @@ str(names2010)</code></pre>
 ##   .. )
 ##  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;</code></pre>
 </div>
-<div id="exploring-the-data" class="section level3">
-<h3>Exploring the Data</h3>
+<div id="inspect-the-data" class="section level3">
+<h3>Inspect the Data</h3>
 <p>In addition to inspecting our data, we can use various methods to get
 information.</p>
 <pre class="r"><code># Get the size of the data
@@ -710,23 +700,13 @@ names(names2010)</code></pre>
 
 # Get the count of babies with the most popular name overall.
 # Note this doesn&#39;t include the name itself.
+
+# We can get the name and other aggregations using base R methods
+# but for now we will pass on that and just get the maximum of the count field. 
+# In a minute we will introduce dplyr, which offers similar functionality
+# but allows us to develop more human readable workflows.
 max(names2010$count)</code></pre>
 <pre><code>## [1] 22925</code></pre>
-<pre class="r"><code># We can get that information.
-names2010[which.max(names2010$count),]</code></pre>
-<pre><code>## # A tibble: 1 × 3
-##   name     sex   count
-##   &lt;chr&gt;    &lt;chr&gt; &lt;dbl&gt;
-## 1 Isabella F     22925</code></pre>
-<pre class="r"><code># Notice the trailing comma. 
-# Think of bracket as slicing by [row(s), column(s)]
-# So if we only want the overall most popular name,
-# we don&#39;t even need to include the count.
-names2010[which.max(names2010$count), 1] # 1 for the first column</code></pre>
-<pre><code>## # A tibble: 1 × 1
-##   name    
-##   &lt;chr&gt;   
-## 1 Isabella</code></pre>
 <p><em>Slicing</em> or subsetting data in R using conditions and index
 positions of rows and columns is an important topic. We can point to
 resources that go into how R indexes dataframes in more detail.</p>
@@ -778,14 +758,16 @@ popularity.</p>
 Using the commands we’ve already looked at:</p>
 <ol style="list-style-type: decimal">
 <li>Read the 2011 baby name data into an object. Name the object
-<em>names2011</em>.</li>
+<em>names2011</em>. The url for the 2011 data is <a href="https://raw.githubusercontent.com/unmrds/cc-R-RStudio/master/cc-R-Names/data/2011" class="uri">https://raw.githubusercontent.com/unmrds/cc-R-RStudio/master/cc-R-Names/data/2011</a></li>
 <li>Identify the most popular name overall in the dataset.</li>
 <li>Change the ‘sex’ column to a factor and generate descriptive
 statistics showing the total count of babies with SSN registrations by
 sex.</li>
 <li>Plot the distribution of babies by sex.</li>
 </ol>
-<pre class="r"><code>names2011 &lt;- read_csv(&quot;./data/2011&quot;)</code></pre>
+<pre class="r"><code>file_url &lt;-  &#39;https://raw.githubusercontent.com/unmrds/cc-R-RStudio/master/cc-R-Names/data/2011&#39;
+download.file(file_url, &#39;./data/2011&#39;)
+names2011 &lt;- read_csv(&quot;./data/2011&quot;)</code></pre>
 <pre><code>## Rows: 33923 Columns: 3
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
@@ -816,7 +798,7 @@ summary(names2011)</code></pre>
 <div id="manipultaing-data-with-dplyr" class="section level2">
 <h2>Manipultaing Data with <code>dplyr</code></h2>
 <pre class="r"><code># Another way to get the most popular baby name
-# introducing a new operator - the margittr: %&gt;%
+# introducing a new operator - the margittr pipe: %&gt;%
 # CTL+SHIFT+M
 # explain what is a pipe - output of one command as input to another
 names2011 %&gt;% 
@@ -825,7 +807,8 @@ names2011 %&gt;%
 ##   name   sex   count
 ##   &lt;chr&gt;  &lt;fct&gt; &lt;dbl&gt;
 ## 1 Sophia F     21855</code></pre>
-<pre class="r"><code># That is longer than our previous solution but much easier to read
+<pre class="r"><code># That is longer than the base R syntax for pulling this same data point
+# but is much easier to read
 # and we can add more conditions - in both years so far the most popular
 # name has been a girl&#39;s name. What is the most popular boy&#39;s name?
 names2011 %&gt;%
@@ -848,6 +831,7 @@ names2011 %&gt;%
 <pre class="r"><code># But this doesn&#39;t?
 # Note - it is &#39;working&#39; in that it doesn&#39;t throw an error
 # but there is no row that satisfies both conditions
+# because the max count value in the dataset is for a girl name
 names2011 %&gt;% 
   filter(sex == &quot;M&quot; &amp; count == max(count))</code></pre>
 <pre><code>## # A tibble: 0 × 3
@@ -935,7 +919,7 @@ str(long_names)</code></pre>
 ##   ..   count = col_double()
 ##   .. )
 ##  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;</code></pre>
-<pre class="r"><code># Using dplyr append
+<pre class="r"><code># Using dplyr bind_rows
 long_names_2 &lt;- names2010 %&gt;% 
   bind_rows(names2011)
 str(long_names_2)</code></pre>
@@ -1027,6 +1011,19 @@ most_popular</code></pre>
 ## 2 M     Jacob        42520</code></pre>
 <div id="exercise-the-winner-is" class="section level4">
 <h4>Exercise: The Winner Is…</h4>
+<p>Before we can proceed with the next exercise, we need to download the
+rest of the data. We could use the same process as above, but since
+there are several files (through 2021) it makes sense to download the
+zip file of all the data from the repository for this workshop. Then we
+can extract is all to our <em>data</em> directory.</p>
+<pre class="r"><code>zip_url &lt;- &quot;https://github.com/unmrds/cc-R-RStudio/raw/master/cc-R-Names/data.zip&quot;
+download.file(zip_url, &#39;data.zip&#39;)
+unzip(&#39;data.zip&#39;, exdir = &#39;.&#39;)</code></pre>
+<p>Before proceeding, be sure to check that all of the data are in the
+right place.</p>
+<pre class="r"><code>list.files(&#39;./data/&#39;)</code></pre>
+<pre><code>##  [1] &quot;2010&quot; &quot;2011&quot; &quot;2012&quot; &quot;2013&quot; &quot;2014&quot; &quot;2015&quot; &quot;2016&quot; &quot;2017&quot; &quot;2018&quot; &quot;2019&quot;
+## [11] &quot;2020&quot; &quot;2021&quot;</code></pre>
 <p>Combine the data from years 2012-2015 to the ‘long_names’ dataframe.
 What are the most popular girl’s and boy’s names for the timeframe
 2010-2015?</p>
