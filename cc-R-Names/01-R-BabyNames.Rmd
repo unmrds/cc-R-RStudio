@@ -626,7 +626,7 @@ your name?
 ```{r s1}
 my_name <- six_years %>% 
   group_by(name) %>% 
-  filter(name == "Jonathan") %>% 
+  filter(name == "Jonathan" & sex == 'M') %>% 
   summarise(num_babies = sum(count))
 my_name
 ```
@@ -727,14 +727,14 @@ How would we include even more names?
 ```{r plot6}
 # First, create a subset
 names_compare <- six_years %>% 
-  filter(sex == "M" & (name == "Jacob" | name == "Jonathan" | name == "Todd"))
+  filter(sex == "M" & (name == "Jacob" | name == "Jonathan" | name == "Karl"))
 names_compare
 
 # now plot
 # other themes: light, minimal, classic
 names_plot <- ggplot(names_compare, aes(year, count, group=name))
 names_plot + geom_line(aes(color=name)) + geom_point(aes(color=name)) +
-  labs(x = "Year", y = "Count", title = "Name Comparison: Sophia and Isabella") +
+  labs(x = "Year", y = "Count", title = "Name Comparison") +
   theme_light()
 ```
 
