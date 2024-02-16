@@ -562,6 +562,7 @@ most_popular <- long_names %>%
 most_popular
 ```
 
+########### 2024-02-16 Start Here ##############################################
 
 #### Exercise: The Winner Is...
 
@@ -573,8 +574,10 @@ directory.
 
 ```{r}
 zip_url <- "https://github.com/unmrds/cc-R-RStudio/raw/master/cc-R-Names/data.zip"
+getwd() # this returns a different value when executed within a RMD NB vs. script or command prompt
 download.file(zip_url, 'data.zip')
-unzip('data.zip', exdir = '.')
+unzip('data.zip', exdir = '.') # this will work when executing in a RMD notebook
+# unzip('data.zip', exdir = 'cc-R-Names') # this will work when executing in an R script
 ```
 
 Before proceeding, be sure to check that all of the data are in the right
@@ -583,6 +586,27 @@ place.
 ```{r check contents of data directory}
 list.files('./data/')
 ```
+
+########### actions from above to ensure we are in a state to continue #########
+```{r load_packages}
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+# read in the 2010 and 2011 datasets 
+names2010 <- read_csv("./data/2010")
+names2011 <- read_csv("./data/2011")
+
+# Add a column for the year before merging
+names2010$year <- '2010'
+names2011$year <- '2011'
+
+# Combine the two enhanced dataframes into a single df
+long_names <- rbind(names2010, names2011)
+
+```
+################################################################################
+
 
 Combine the data from years 2012-2015 to the 'long_names' dataframe. What
 are the most popular girl's and boy's names for the timeframe 2010-2015?
